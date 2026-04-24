@@ -1,614 +1,1602 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mastering Thermodynamics: A Comprehensive Guide</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Memperbarui CDN Lucide ke unpkg yang lebih stabil -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ThermoMaster — The Science of Heat & Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  /* ── TOKENS ── */
+  :root {
+    --bg:       #faf8f4;
+    --surface:  #ffffff;
+    --surface2: #f3efe8;
+    --border:   #e8e0d0;
+    --text:     #1a1612;
+    --muted:    #7a6f60;
+    --amber:    #e07b00;
+    --amber-l:  #fff3e0;
+    --amber-d:  #b85f00;
+    --teal:     #0d7377;
+    --teal-l:   #e0f5f5;
+    --red:      #c0392b;
+    --red-l:    #fdecea;
+    --green:    #1a6b3a;
+    --green-l:  #e6f5ec;
+    --navy:     #0f1f3d;
+    --navy-m:   #1e3a6e;
+    --gold:     #d4a017;
+    --shadow:   0 4px 24px rgba(26,22,18,.08);
+    --shadow-l: 0 2px 8px rgba(26,22,18,.06);
+    --r:        14px;
+    --r-sm:     8px;
+    --font-d:   'Syne', sans-serif;
+    --font-b:   'DM Sans', sans-serif;
+    --font-m:   'DM Mono', monospace;
+  }
 
-        .glass {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(229, 231, 235, 0.5);
-        }
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body { font-family: var(--font-b); background: var(--bg); color: var(--text); line-height: 1.65; }
+  h1,h2,h3,h4 { font-family: var(--font-d); line-height: 1.2; }
+  a { color: inherit; text-decoration: none; }
+  img, svg { display: block; max-width: 100%; }
+  button { cursor: pointer; font-family: var(--font-b); border: none; outline: none; }
 
-        .law-card:hover {
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
-        }
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--amber), var(--teal));
+    width: 0%; z-index: 9999; transition: width .1s linear;
+  }
 
-        .formula-box {
-            background: #f8fafc;
-            border-left: 4px solid #3b82f6;
-            padding: 1rem;
-            font-family: 'Courier New', Courier, monospace;
-        }
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 3px; left: 0; right: 0; z-index: 1000;
+    background: rgba(250,248,244,.92); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: var(--font-d); font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: .5rem; }
+  .nav-logo span { color: var(--amber); }
+  .nav-links { display: flex; gap: 2rem; font-size: .85rem; font-weight: 500; }
+  .nav-links a { color: var(--muted); transition: color .2s; padding: .25rem 0; border-bottom: 2px solid transparent; }
+  .nav-links a:hover, .nav-links a.active { color: var(--amber); border-color: var(--amber); }
+  .nav-badge {
+    background: var(--amber); color: #fff; font-size: .7rem; font-family: var(--font-d);
+    font-weight: 700; padding: .2rem .6rem; border-radius: 20px; letter-spacing: .05em;
+  }
 
-        .step-number {
-            width: 32px;
-            height: 32px;
-            background: #3b82f6;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 8rem 2rem 6rem;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #fff8ee, transparent),
+                radial-gradient(ellipse 60% 40% at 80% 80%, #e0f5f5, transparent),
+                var(--bg);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: 'THERMO'; position: absolute; bottom: -2rem; right: -1rem;
+    font-family: var(--font-d); font-size: clamp(6rem, 18vw, 18rem); font-weight: 800;
+    color: rgba(224,123,0,.05); line-height: 1; pointer-events: none; user-select: none;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .hero-eyebrow { font-family: var(--font-m); font-size: .8rem; color: var(--amber); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1.2rem; }
+  .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 1.5rem; }
+  .hero h1 em { font-style: normal; color: var(--amber); }
+  .hero p { font-size: 1.05rem; color: var(--muted); max-width: 480px; margin-bottom: 2.5rem; line-height: 1.8; }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--amber); color: #fff; padding: .75rem 1.75rem; border-radius: 50px;
+    font-weight: 700; font-family: var(--font-d); font-size: .95rem; letter-spacing: .02em;
+    transition: background .2s, transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 16px rgba(224,123,0,.3);
+  }
+  .btn-primary:hover { background: var(--amber-d); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(224,123,0,.35); }
+  .btn-outline {
+    background: transparent; color: var(--text); padding: .75rem 1.75rem; border-radius: 50px;
+    font-weight: 600; font-family: var(--font-d); font-size: .95rem;
+    border: 2px solid var(--border); transition: border-color .2s, color .2s;
+  }
+  .btn-outline:hover { border-color: var(--amber); color: var(--amber); }
 
-        /* Transisi untuk animasi simulasi SVG */
-        .sim-element {
-            transition: fill 0.5s ease, opacity 0.3s ease;
-        }
-        
-        /* Animasi gelombang panas */
-        @keyframes radiate {
-            0% { opacity: 0.8; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
-        }
-        .heat-wave {
-            animation: radiate 2s infinite linear;
-            transform-origin: center;
-        }
-    </style>
+  /* Hero stats */
+  .hero-stats { display: flex; flex-direction: column; gap: 1.5rem; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 1.5rem; box-shadow: var(--shadow-l); position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--amber);
+  }
+  .stat-card.teal::before { background: var(--teal); }
+  .stat-card.navy::before { background: var(--navy); }
+  .stat-num { font-family: var(--font-d); font-size: 2rem; font-weight: 800; }
+  .stat-label { font-size: .85rem; color: var(--muted); margin-top: .25rem; }
+
+  /* ── SECTION WRAPPER ── */
+  .section-wrap { max-width: 1100px; margin: 0 auto; padding: 5rem 2rem; }
+  .section-tag {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-family: var(--font-m); font-size: .75rem; color: var(--amber); letter-spacing: .12em;
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .section-tag::before { content: ''; width: 20px; height: 2px; background: var(--amber); }
+  .section-title { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; margin-bottom: 1rem; }
+  .section-sub { font-size: 1.05rem; color: var(--muted); max-width: 560px; line-height: 1.8; margin-bottom: 3.5rem; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ── LAW CARDS ── */
+  .laws-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); gap: 1.5rem; }
+  .law-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 2rem; display: flex; flex-direction: column; gap: 1.25rem;
+    box-shadow: var(--shadow-l); transition: transform .25s, box-shadow .25s;
+    position: relative; overflow: hidden;
+  }
+  .law-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .law-card::after {
+    content: attr(data-num); position: absolute; right: 1.5rem; top: 1rem;
+    font-family: var(--font-d); font-size: 4rem; font-weight: 800;
+    color: rgba(224,123,0,.08); line-height: 1;
+  }
+  .law-header { display: flex; align-items: center; gap: 1rem; }
+  .law-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+  }
+  .law-icon.amber { background: var(--amber-l); color: var(--amber); }
+  .law-icon.teal  { background: var(--teal-l);  color: var(--teal); }
+  .law-icon.red   { background: var(--red-l);   color: var(--red); }
+  .law-icon.navy  { background: #e8edf5;        color: var(--navy); }
+  .law-tagline { font-size: .78rem; font-family: var(--font-m); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-top: .15rem; }
+  .law-vis { background: var(--surface2); border-radius: 10px; overflow: hidden; }
+  .law-body { font-size: .95rem; color: var(--muted); line-height: 1.8; }
+  .formula {
+    background: var(--navy); color: #e2e8f0; font-family: var(--font-m);
+    padding: .85rem 1.25rem; border-radius: var(--r-sm); font-size: .95rem;
+    display: flex; align-items: center; gap: .75rem;
+  }
+  .formula-label { font-size: .7rem; color: #64748b; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .25rem; }
+  .formula-val { color: #f8d76b; font-weight: 500; }
+  details.law-details summary {
+    font-size: .85rem; font-weight: 600; color: var(--amber); cursor: pointer;
+    list-style: none; display: flex; align-items: center; gap: .4rem;
+    padding: .5rem 0; border-top: 1px solid var(--border); margin-top: .5rem;
+  }
+  details.law-details summary::after { content: '↓'; transition: transform .2s; }
+  details.law-details[open] summary::after { transform: rotate(180deg); }
+  details.law-details .detail-body {
+    font-size: .9rem; color: var(--muted); line-height: 1.8;
+    padding: .75rem 0; border-top: 1px solid var(--border); margin-top: .5rem;
+  }
+  .example-tag {
+    display: inline-block; background: var(--amber-l); color: var(--amber-d);
+    font-size: .72rem; font-weight: 700; padding: .2rem .6rem; border-radius: 20px;
+    font-family: var(--font-d); letter-spacing: .04em; margin-bottom: .4rem;
+  }
+
+  /* ── THERMODYNAMIC PROCESSES ── */
+  .processes-section { background: var(--navy); color: #e2e8f0; border-radius: 20px; overflow: hidden; }
+  .processes-inner { padding: 4rem; }
+  .processes-inner .section-tag { color: #f8d76b; }
+  .processes-inner .section-tag::before { background: #f8d76b; }
+  .processes-inner .section-title { color: #fff; }
+  .processes-inner .section-sub { color: #94a3b8; }
+  .proc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .proc-card {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: var(--r); padding: 1.5rem; transition: background .2s, transform .2s;
+  }
+  .proc-card:hover { background: rgba(255,255,255,.1); transform: translateY(-3px); }
+  .proc-name { font-family: var(--font-d); font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: .5rem; }
+  .proc-const { font-family: var(--font-m); font-size: .8rem; color: #f8d76b; margin-bottom: .6rem; }
+  .proc-desc { font-size: .82rem; color: #94a3b8; line-height: 1.6; }
+  .proc-dot { width: 8px; height: 8px; border-radius: 50%; margin-bottom: .8rem; }
+
+  /* ── PV DIAGRAM ── */
+  .pv-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 2rem; }
+  .pv-tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .pv-tab {
+    padding: .45rem 1rem; border-radius: 50px; font-size: .85rem; font-weight: 600;
+    border: 1.5px solid var(--border); background: transparent; color: var(--muted);
+    transition: all .2s;
+  }
+  .pv-tab.active, .pv-tab:hover { background: var(--amber); color: #fff; border-color: var(--amber); }
+
+  /* ── CARNOT CYCLE ── */
+  .carnot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+  .carnot-info { display: flex; flex-direction: column; gap: 1rem; }
+  .carnot-step {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm);
+    padding: 1.2rem 1.5rem; display: flex; gap: 1rem; align-items: flex-start;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .carnot-step.active { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-l); }
+  .carnot-step-num {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--surface2);
+    font-family: var(--font-d); font-weight: 700; font-size: .85rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    color: var(--amber); border: 2px solid var(--amber);
+  }
+  .carnot-step-title { font-weight: 700; font-size: .95rem; margin-bottom: .2rem; }
+  .carnot-step-desc { font-size: .83rem; color: var(--muted); line-height: 1.6; }
+  .efficiency-box {
+    background: linear-gradient(135deg, var(--navy), var(--navy-m));
+    color: #fff; border-radius: var(--r); padding: 1.5rem; margin-top: 1rem;
+  }
+  .efficiency-label { font-size: .75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .4rem; }
+  .efficiency-formula { font-family: var(--font-m); font-size: 1.1rem; color: #f8d76b; }
+  .efficiency-result { font-family: var(--font-d); font-size: 2.5rem; font-weight: 800; color: #fff; margin-top: .5rem; }
+  .efficiency-sub { font-size: .8rem; color: #64748b; margin-top: .25rem; }
+  .eff-inputs { display: flex; gap: 1rem; margin-top: 1rem; }
+  .eff-input-wrap { flex: 1; }
+  .eff-input-wrap label { font-size: .75rem; color: #94a3b8; display: block; margin-bottom: .3rem; }
+  .eff-input-wrap input {
+    width: 100%; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+    border-radius: var(--r-sm); padding: .5rem .75rem; color: #fff; font-family: var(--font-m);
+    font-size: .9rem;
+  }
+  .eff-input-wrap input:focus { outline: none; border-color: #f8d76b; }
+
+  /* ── ENTROPY VISUALIZER ── */
+  .entropy-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  .entropy-header { padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; }
+  .entropy-canvas-wrap { background: var(--navy); padding: 1.5rem; display: flex; justify-content: center; }
+  .entropy-controls { padding: 1.5rem 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  .entropy-stat { background: var(--surface2); border-radius: var(--r-sm); padding: .6rem 1rem; }
+  .entropy-stat-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .entropy-stat-val { font-family: var(--font-d); font-size: 1.3rem; font-weight: 800; }
+
+  /* ── CPU SIMULATION (enhanced) ── */
+  .sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+  .sim-panel { background: var(--surface2); border-radius: var(--r); padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+  .temp-monitor {
+    background: var(--navy); border-radius: var(--r); padding: 1.5rem;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;
+  }
+  .temp-metric { text-align: center; }
+  .temp-metric-val { font-family: var(--font-d); font-size: 1.8rem; font-weight: 800; color: #fff; }
+  .temp-metric-label { font-size: .7rem; color: #64748b; text-transform: uppercase; letter-spacing: .06em; margin-top: .2rem; }
+  .sim-btn {
+    width: 100%; padding: .9rem; border-radius: var(--r-sm); font-family: var(--font-d);
+    font-weight: 700; font-size: 1rem; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: .5rem;
+  }
+  .sim-btn-power { background: var(--surface); border: 2px solid var(--border); color: var(--text); }
+  .sim-btn-power.on { background: var(--red); border-color: var(--red); color: #fff; }
+  .sim-btn-paste { background: transparent; border: 2px solid var(--teal); color: var(--teal); }
+  .sim-btn-paste.on { background: var(--teal); color: #fff; }
+  .sim-btn-fan { background: transparent; border: 2px solid var(--navy); color: var(--navy); }
+  .sim-btn-fan.on { background: var(--navy); color: #fff; }
+  .status-box {
+    padding: .85rem 1.1rem; border-radius: var(--r-sm); font-size: .85rem; font-weight: 500;
+    border-left: 3px solid;
+  }
+  .status-idle  { background: var(--surface2); border-color: var(--border); color: var(--muted); }
+  .status-warn  { background: #fff8e1; border-color: #f59e0b; color: #92400e; }
+  .status-ok    { background: var(--green-l); border-color: var(--green); color: var(--green); }
+  .status-crit  { background: var(--red-l); border-color: var(--red); color: var(--red); }
+  .log-panel {
+    background: var(--navy); border-radius: var(--r-sm); padding: 1rem;
+    height: 120px; overflow-y: auto; font-family: var(--font-m); font-size: .75rem; color: #94a3b8;
+  }
+  .log-entry { padding: .1rem 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+  .log-entry .log-time { color: #f8d76b; margin-right: .5rem; }
+  .log-entry.log-warn { color: #fbbf24; }
+  .log-entry.log-ok { color: #4ade80; }
+  .log-entry.log-crit { color: #f87171; }
+
+  /* ── QUIZ ── */
+  .quiz-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  .quiz-header { background: var(--teal); color: #fff; padding: 1.75rem 2rem; }
+  .quiz-header h3 { font-family: var(--font-d); font-size: 1.4rem; margin-bottom: .3rem; }
+  .quiz-header p { font-size: .85rem; opacity: .8; }
+  .quiz-body { padding: 2rem; }
+  .quiz-progress { display: flex; gap: .4rem; margin-bottom: 2rem; }
+  .quiz-dot { width: 28px; height: 6px; border-radius: 3px; background: var(--border); transition: background .3s; }
+  .quiz-dot.done { background: var(--teal); }
+  .quiz-dot.current { background: var(--amber); }
+  .quiz-q { font-family: var(--font-d); font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 2rem; }
+  .quiz-opt {
+    padding: .9rem 1.25rem; border-radius: var(--r-sm); border: 2px solid var(--border);
+    background: var(--surface); font-size: .95rem; text-align: left; transition: all .2s;
+    cursor: pointer; color: var(--text);
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--amber); background: var(--amber-l); }
+  .quiz-opt.correct { background: var(--green-l); border-color: var(--green); color: var(--green); }
+  .quiz-opt.wrong   { background: var(--red-l);   border-color: var(--red);   color: var(--red); }
+  .quiz-opt:disabled { cursor: not-allowed; }
+  .quiz-feedback {
+    padding: 1rem 1.25rem; border-radius: var(--r-sm); font-size: .9rem; line-height: 1.6;
+    margin-bottom: 1.5rem; display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok  { background: var(--green-l); color: var(--green); border-left: 4px solid var(--green); }
+  .quiz-feedback.err { background: var(--red-l);   color: var(--red);   border-left: 4px solid var(--red); }
+  .quiz-score {
+    text-align: center; padding: 2rem; display: none;
+  }
+  .quiz-score.show { display: block; }
+  .quiz-score-num { font-family: var(--font-d); font-size: 4rem; font-weight: 800; color: var(--amber); }
+  .quiz-score-label { font-size: 1.1rem; color: var(--muted); margin-top: .5rem; }
+  .quiz-score-msg { font-size: .9rem; color: var(--muted); margin: 1rem 0 1.5rem; }
+
+  /* ── GLOSSARY ── */
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .glossary-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm);
+    padding: 1.25rem; transition: border-color .2s, transform .2s;
+  }
+  .glossary-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+  .glossary-term { font-family: var(--font-d); font-weight: 700; font-size: 1rem; margin-bottom: .3rem; color: var(--amber); }
+  .glossary-symbol { font-family: var(--font-m); font-size: .8rem; color: var(--muted); margin-bottom: .5rem; }
+  .glossary-def { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+  .glossary-search { width: 100%; padding: .75rem 1rem; border-radius: var(--r-sm); border: 1.5px solid var(--border); background: var(--surface); font-family: var(--font-b); font-size: .95rem; margin-bottom: 1.5rem; transition: border-color .2s; }
+  .glossary-search:focus { outline: none; border-color: var(--amber); }
+
+  /* ── FORMULA CALCULATOR ── */
+  .calc-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 2rem; }
+  .calc-select {
+    width: 100%; padding: .7rem 1rem; border-radius: var(--r-sm); border: 1.5px solid var(--border);
+    background: var(--surface); font-family: var(--font-b); font-size: .95rem;
+    margin-bottom: 1.5rem; color: var(--text);
+  }
+  .calc-select:focus { outline: none; border-color: var(--amber); }
+  .calc-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+  .calc-field label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: .4rem; color: var(--muted); }
+  .calc-field input {
+    width: 100%; padding: .65rem .9rem; border: 1.5px solid var(--border); border-radius: var(--r-sm);
+    font-family: var(--font-m); font-size: .95rem; color: var(--text); background: var(--surface2);
+    transition: border-color .2s;
+  }
+  .calc-field input:focus { outline: none; border-color: var(--amber); background: #fff; }
+  .calc-result {
+    background: var(--navy); color: #fff; border-radius: var(--r-sm); padding: 1.25rem;
+    font-family: var(--font-m); font-size: 1.1rem; text-align: center; color: #f8d76b;
+    min-height: 56px; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── FOOTER ── */
+  footer { background: var(--navy); color: #94a3b8; padding: 3rem 2rem; margin-top: 4rem; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
+  .footer-logo { font-family: var(--font-d); font-size: 1.5rem; font-weight: 800; color: #fff; }
+  .footer-logo span { color: var(--amber); }
+  .footer-links { display: flex; gap: 2rem; font-size: .85rem; }
+  .footer-links a { color: #64748b; hover: color #fff; transition: color .2s; }
+  .footer-links a:hover { color: #fff; }
+  .footer-copy { font-size: .8rem; color: #475569; }
+
+  /* ── UTILITIES ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .badge {
+    display: inline-flex; align-items: center; gap: .35rem;
+    font-size: .72rem; font-weight: 700; font-family: var(--font-d);
+    padding: .2rem .65rem; border-radius: 20px; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .badge-amber { background: var(--amber-l); color: var(--amber-d); }
+  .badge-teal  { background: var(--teal-l);  color: var(--teal); }
+  .badge-navy  { background: #e8edf5;        color: var(--navy); }
+  .badge-red   { background: var(--red-l);   color: var(--red); }
+
+  @keyframes fan-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes heat { 0% { opacity:.7; transform: translateY(0) scale(1); } 100% { opacity:0; transform: translateY(-20px) scale(1.3); } }
+  .fan-anim { transform-origin: 150px 110px; }
+  .fan-anim.spinning { animation: fan-spin .6s linear infinite; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
+    .hero-inner, .carnot-grid, .sim-grid, .grid-2 { grid-template-columns: 1fr; }
+    .hero::before { font-size: 7rem; }
+    .laws-grid { grid-template-columns: 1fr; }
+    .calc-fields { grid-template-columns: 1fr; }
+    .proc-grid { grid-template-columns: 1fr 1fr; }
+    .processes-inner { padding: 2.5rem 1.5rem; }
+  }
+  @media (max-width: 560px) {
+    .nav-links { display: none; }
+    .proc-grid { grid-template-columns: 1fr; }
+    .hero { padding-top: 6rem; }
+    .eff-inputs { flex-direction: column; }
+  }
+</style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <i data-lucide="flame" class="text-orange-500"></i>
-                <span class="font-bold text-xl tracking-tight">ThermoMaster</span>
-            </div>
-            <div class="hidden md:flex gap-8 text-sm font-medium">
-                <a href="#intro" class="hover:text-blue-600 transition">Introduction</a>
-                <a href="#laws" class="hover:text-blue-600 transition">The 4 Laws</a>
-                <a href="#cpu" class="hover:text-blue-600 transition">CPU Application</a>
-                <a href="#simulation" class="hover:text-blue-600 transition text-blue-600 font-bold">Live Simulation</a>
-            </div>
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">🔥 <span>Thermo</span>Master</div>
+    <div class="nav-links">
+      <a href="#intro">Intro</a>
+      <a href="#laws">4 Laws</a>
+      <a href="#processes">Processes</a>
+      <a href="#carnot">Carnot</a>
+      <a href="#entropy">Entropy</a>
+      <a href="#simulation">Simulation</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#glossary">Glossary</a>
+    </div>
+    <div class="nav-badge">Physics</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════ HERO ═══════════════════════════════════ -->
+<section class="hero" id="intro">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Physics — Thermal Science</div>
+      <h1>The <em>Science</em> of Heat, Work & Energy</h1>
+      <p>Thermodynamics governs everything from the engine in your car to the CPU in your laptop. Master the four laws, explore real applications, and test your knowledge.</p>
+      <div class="hero-btns">
+        <a href="#laws" class="btn-primary">Begin Learning →</a>
+        <a href="#quiz" class="btn-outline">Take the Quiz</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--amber)">4</div>
+        <div class="stat-label">Fundamental Laws · from Zeroth to Third</div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-num" style="color:var(--teal)">5</div>
+        <div class="stat-label">Thermodynamic Processes · Isothermal, Adiabatic & more</div>
+      </div>
+      <div class="stat-card navy">
+        <div class="stat-num" style="color:var(--navy)">∞</div>
+        <div class="stat-label">Real-world applications · engines, CPUs, refrigerators</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:.75rem 2rem;">
+  <div style="max-width:1100px;margin:0 auto;display:flex;gap:2rem;overflow-x:auto;font-size:.8rem;color:var(--muted);font-family:var(--font-m);">
+    <span>Q = Heat added to system</span>
+    <span>W = Work done by system</span>
+    <span>ΔU = Change in internal energy</span>
+    <span>S = Entropy</span>
+    <span>T = Temperature (Kelvin)</span>
+    <span>η = Efficiency</span>
+    <span>P = Pressure · V = Volume</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ 4 LAWS ════════════════════════════════ -->
+<section class="section-wrap" id="laws">
+  <div class="section-tag">Module 01</div>
+  <div class="section-title">The Four Laws of Thermodynamics</div>
+  <div class="section-sub">These four laws define how energy behaves in the universe — from temperature measurement to the arrow of time itself.</div>
+
+  <div class="laws-grid">
+
+    <!-- ZEROTH LAW -->
+    <div class="law-card" data-num="0">
+      <div class="law-header">
+        <div class="law-icon amber">⚖️</div>
+        <div>
+          <h3 style="font-size:1.1rem">Zeroth Law</h3>
+          <div class="law-tagline">Thermal Equilibrium</div>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <header id="intro" class="pt-32 pb-20 px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                Understanding Thermodynamics
-            </h1>
-            <p class="text-lg text-slate-600 leading-relaxed mb-8">
-                Thermodynamics is the branch of physics that deals with heat, work, and temperature, and their relation to energy, radiation, and physical properties of matter.
-            </p>
-            <div class="flex justify-center gap-4">
-                <a href="#laws" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition">Start Learning</a>
-                <a href="#simulation" class="bg-white border border-slate-200 px-6 py-3 rounded-full font-semibold hover:border-blue-400 transition">Try Simulation</a>
-            </div>
+        <div style="margin-left:auto"><span class="badge badge-amber">Foundation</span></div>
+      </div>
+      <div class="law-vis" style="padding:1.25rem;display:flex;justify-content:center">
+        <svg width="260" height="90" viewBox="0 0 260 90">
+          <defs>
+            <radialGradient id="ga" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fca5a5"/>
+              <stop offset="100%" stop-color="#ef4444"/>
+            </radialGradient>
+            <radialGradient id="gb" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#86efac"/>
+              <stop offset="100%" stop-color="#22c55e"/>
+            </radialGradient>
+          </defs>
+          <rect x="10" y="20" width="56" height="50" rx="6" fill="url(#ga)"/>
+          <text x="38" y="50" fill="white" font-family="'Syne',sans-serif" font-weight="700" font-size="15" text-anchor="middle">A</text>
+          <text x="38" y="64" fill="rgba(255,255,255,.7)" font-size="9" text-anchor="middle">90°C</text>
+          <rect x="102" y="20" width="56" height="50" rx="6" fill="url(#gb)"/>
+          <text x="130" y="50" fill="white" font-family="'Syne',sans-serif" font-weight="700" font-size="15" text-anchor="middle">C</text>
+          <text x="130" y="64" fill="rgba(255,255,255,.7)" font-size="9" text-anchor="middle">Reference</text>
+          <rect x="194" y="20" width="56" height="50" rx="6" fill="url(#ga)"/>
+          <text x="222" y="50" fill="white" font-family="'Syne',sans-serif" font-weight="700" font-size="15" text-anchor="middle">B</text>
+          <text x="222" y="64" fill="rgba(255,255,255,.7)" font-size="9" text-anchor="middle">90°C</text>
+          <line x1="66" y1="45" x2="102" y2="45" stroke="#e07b00" stroke-width="2.5" stroke-dasharray="4,3"/>
+          <line x1="158" y1="45" x2="194" y2="45" stroke="#e07b00" stroke-width="2.5" stroke-dasharray="4,3"/>
+          <text x="84" y="38" fill="#e07b00" font-size="9" text-anchor="middle" font-weight="600">=T</text>
+          <text x="176" y="38" fill="#e07b00" font-size="9" text-anchor="middle" font-weight="600">=T</text>
+          <text x="130" y="84" fill="#64748b" font-size="9" text-anchor="middle">∴ A and B are also in equilibrium</text>
+        </svg>
+      </div>
+      <div class="law-body">If two systems are each in thermal equilibrium with a third system, they must be in thermal equilibrium with each other. This law defines <strong>temperature</strong> as a measurable property.</div>
+      <div>
+        <div class="formula-label">Mathematical Statement</div>
+        <div class="formula">If <span class="formula-val">T_A = T_C</span> and <span class="formula-val">T_B = T_C</span> &nbsp;→&nbsp; <span class="formula-val">T_A = T_B</span></div>
+      </div>
+      <details class="law-details">
+        <summary>Real-world examples & deeper context</summary>
+        <div class="detail-body">
+          <span class="example-tag">Example 1</span>
+          <p style="margin-bottom:.7rem">A <strong>thermometer</strong> works because of the Zeroth Law. When you put a thermometer in contact with your body, they reach thermal equilibrium — and the thermometer reading equals your body temperature.</p>
+          <span class="example-tag">Example 2</span>
+          <p style="margin-bottom:.7rem">Two rooms connected through a wall will eventually reach the same temperature — thermal equilibrium with the surrounding environment.</p>
+          <span class="example-tag">Why "Zeroth"?</span>
+          <p>It was named <em>after</em> the First and Second laws were already established, yet it is more fundamental. Scientists added it retroactively as "Zeroth" to preserve the existing numbering.</p>
         </div>
-    </header>
+      </details>
+    </div>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 py-12">
-        
-        <!-- The Four Laws with SVG Visualizations -->
-        <section id="laws" class="mb-24">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold mb-4">The Fundamental Laws</h2>
-                <div class="h-1 w-20 bg-blue-600 mx-auto rounded"></div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Zeroth Law -->
-                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-3 bg-blue-100 text-blue-600 rounded-lg">
-                            <i data-lucide="thermometer"></i>
-                        </div>
-                        <h3 class="text-xl font-bold">Zeroth Law</h3>
-                    </div>
-                    <!-- Visualisasi SVG Hukum Ke-0 -->
-                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
-                        <svg width="240" height="100" viewBox="0 0 240 100">
-                            <!-- Garis Kesetimbangan -->
-                            <path d="M 60 50 L 120 50 L 180 50" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" fill="none" />
-                            <path d="M 60 50 L 60 80 L 180 80 L 180 50" stroke="#3b82f6" stroke-width="2" fill="none" />
-                            <!-- Objek A, C, B -->
-                            <rect x="40" y="30" width="40" height="40" rx="4" fill="#ef4444" />
-                            <text x="60" y="55" fill="white" font-weight="bold" text-anchor="middle">A</text>
-                            
-                            <rect x="100" y="30" width="40" height="40" rx="4" fill="#22c55e" />
-                            <text x="120" y="55" fill="white" font-weight="bold" text-anchor="middle">C</text>
-                            
-                            <rect x="160" y="30" width="40" height="40" rx="4" fill="#ef4444" />
-                            <text x="180" y="55" fill="white" font-weight="bold" text-anchor="middle">B</text>
-                            <!-- Simbol Sama Dengan -->
-                            <text x="80" y="45" fill="#64748b" font-weight="bold" text-anchor="middle">=</text>
-                            <text x="140" y="45" fill="#64748b" font-weight="bold" text-anchor="middle">=</text>
-                            <text x="120" y="95" fill="#3b82f6" font-size="12" font-weight="bold" text-anchor="middle">A = B</text>
-                        </svg>
-                    </div>
-                    <p class="text-slate-600 mb-6 italic">"The Law of Thermal Equilibrium"</p>
-                    <p class="text-slate-600 mb-4 flex-grow">
-                        If two systems are each in thermal equilibrium with a third system, they are in thermal equilibrium with each other. This allows us to define temperature.
-                    </p>
-                    <div class="formula-box">
-                        If $A = C$ and $B = C$, then $A = B$
-                    </div>
-                </div>
-
-                <!-- First Law -->
-                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-3 bg-red-100 text-red-600 rounded-lg">
-                            <i data-lucide="battery-charging"></i>
-                        </div>
-                        <h3 class="text-xl font-bold">First Law</h3>
-                    </div>
-                    <!-- Visualisasi SVG Hukum Ke-1 -->
-                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
-                        <svg width="240" height="100" viewBox="0 0 240 100">
-                            <rect x="80" y="20" width="80" height="60" rx="8" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
-                            <text x="120" y="55" fill="#334155" font-weight="bold" text-anchor="middle">System (ΔU)</text>
-                            <!-- Panah Masuk (Heat) -->
-                            <path d="M 20 50 L 70 50" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow-red)"/>
-                            <polygon points="70,45 80,50 70,55" fill="#ef4444"/>
-                            <text x="45" y="40" fill="#ef4444" font-weight="bold" text-anchor="middle">+ Heat (Q)</text>
-                            <!-- Panah Keluar (Work) -->
-                            <path d="M 160 50 L 210 50" stroke="#3b82f6" stroke-width="4"/>
-                            <polygon points="210,45 220,50 210,55" fill="#3b82f6"/>
-                            <text x="190" y="40" fill="#3b82f6" font-weight="bold" text-anchor="middle">Work (W)</text>
-                        </svg>
-                    </div>
-                    <p class="text-slate-600 mb-6 italic">"The Law of Conservation of Energy"</p>
-                    <p class="text-slate-600 mb-4 flex-grow">
-                        Energy can be converted from one form to another with the interaction of heat, work and internal energy, but it cannot be created or destroyed.
-                    </p>
-                    <div class="formula-box">
-                        $\Delta U = Q - W$
-                    </div>
-                </div>
-
-                <!-- Second Law -->
-                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-3 bg-purple-100 text-purple-600 rounded-lg">
-                            <i data-lucide="wind"></i>
-                        </div>
-                        <h3 class="text-xl font-bold">Second Law</h3>
-                    </div>
-                    <!-- Visualisasi SVG Hukum Ke-2 -->
-                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
-                        <svg width="240" height="100" viewBox="0 0 240 100">
-                            <rect x="30" y="20" width="60" height="60" rx="4" fill="#ef4444" />
-                            <text x="60" y="55" fill="white" font-weight="bold" text-anchor="middle">HOT</text>
-                            
-                            <rect x="150" y="20" width="60" height="60" rx="4" fill="#3b82f6" />
-                            <text x="180" y="55" fill="white" font-weight="bold" text-anchor="middle">COLD</text>
-                            
-                            <!-- Panah Aliran Panas -->
-                            <path d="M 100 50 L 140 50" stroke="#f97316" stroke-width="6" stroke-dasharray="4,2"/>
-                            <polygon points="140,40 150,50 140,60" fill="#f97316"/>
-                            <text x="125" y="35" fill="#f97316" font-size="12" font-weight="bold" text-anchor="middle">Natural Flow</text>
-                        </svg>
-                    </div>
-                    <p class="text-slate-600 mb-6 italic">"The Law of Entropy"</p>
-                    <p class="text-slate-600 mb-4 flex-grow">
-                        The total entropy of an isolated system can never decrease over time. Heat naturally flows from hot objects to cold objects, not the other way around.
-                    </p>
-                    <div class="formula-box">
-                        $\Delta S_{total} \geq 0$
-                    </div>
-                </div>
-
-                <!-- Third Law -->
-                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-3 bg-cyan-100 text-cyan-600 rounded-lg">
-                            <i data-lucide="snowflake"></i>
-                        </div>
-                        <h3 class="text-xl font-bold">Third Law</h3>
-                    </div>
-                    <!-- Visualisasi SVG Hukum Ke-3 -->
-                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
-                        <svg width="240" height="100" viewBox="0 0 240 100">
-                            <!-- Termometer -->
-                            <rect x="40" y="20" width="160" height="20" rx="10" fill="#e2e8f0" />
-                            <rect x="40" y="20" width="20" height="20" rx="10" fill="#06b6d4" />
-                            
-                            <!-- Partikel membeku -->
-                            <circle cx="100" cy="70" r="4" fill="#06b6d4" />
-                            <circle cx="120" cy="65" r="4" fill="#06b6d4" />
-                            <circle cx="140" cy="75" r="4" fill="#06b6d4" />
-                            <text x="120" y="95" fill="#64748b" font-size="12" text-anchor="middle">Particles stop moving (Zero Entropy)</text>
-                            
-                            <text x="25" y="35" fill="#06b6d4" font-weight="bold" text-anchor="middle">0 K</text>
-                        </svg>
-                    </div>
-                    <p class="text-slate-600 mb-6 italic">"The Law of Absolute Zero"</p>
-                    <p class="text-slate-600 mb-4 flex-grow">
-                        As temperature approaches absolute zero ($0$ Kelvin), the entropy of a system approaches a constant minimum value. Perfect order is achieved.
-                    </p>
-                    <div class="formula-box">
-                        $S \to 0$ as $T \to 0$ K
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Practical Application: CPU Thermal Paste -->
-        <section id="cpu" class="bg-slate-900 text-white rounded-3xl p-8 md:p-16 mb-12 overflow-hidden relative">
-            <div class="relative z-10">
-                <div class="flex items-center gap-4 mb-8">
-                    <i data-lucide="cpu" class="w-12 h-12 text-blue-400"></i>
-                    <h2 class="text-4xl font-bold">Practical Case: CPU Cooling</h2>
-                </div>
-
-                <div class="grid lg:grid-cols-2 gap-12">
-                    <div>
-                        <h3 class="text-2xl font-semibold mb-4 text-blue-300">Why it matters?</h3>
-                        <p class="text-slate-300 mb-6 leading-relaxed">
-                            Your CPU generates intense heat through electrical resistance (First Law: electrical energy becomes thermal energy). To prevent damage, we must move this heat to a heatsink (Second Law: heat flows from the hot CPU to the cooler heatsink). 
-                        </p>
-                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                            <h4 class="font-bold mb-2 flex items-center gap-2">
-                                <i data-lucide="info" class="w-4 h-4 text-yellow-400"></i>
-                                Thermodynamic Concept
-                            </h4>
-                            <p class="text-sm text-slate-400 italic">
-                                Microscopically, the surfaces of a CPU and Heatsink are uneven. Air gaps act as insulators. Thermal paste (TIM) acts as a high-conductivity bridge, maximizing thermal contact.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white text-slate-900 p-8 rounded-2xl shadow-xl">
-                        <h3 class="text-2xl font-bold mb-6">Thermal Paste Guide</h3>
-                        
-                        <div class="space-y-6">
-                            <div class="flex items-start">
-                                <div class="step-number">1</div>
-                                <div>
-                                    <h4 class="font-bold">Cleaning</h4>
-                                    <p class="text-sm text-slate-600">Remove old paste using Isopropyl Alcohol (90%+) and a lint-free cloth.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start">
-                                <div class="step-number">2</div>
-                                <div>
-                                    <h4 class="font-bold">Application</h4>
-                                    <p class="text-sm text-slate-600">Apply a "pea-sized" amount of high-quality paste in the center of the CPU IHS.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start">
-                                <div class="step-number">3</div>
-                                <div>
-                                    <h4 class="font-bold">Pressure</h4>
-                                    <p class="text-sm text-slate-600">Mount the cooler. The pressure spreads the paste evenly, eliminating air pockets (entropy reduction in the contact layer).</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Abstract Background Element -->
-            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-600 rounded-full opacity-10 blur-3xl"></div>
-        </section>
-
-        <!-- Interactive Simulation Section -->
-        <section id="simulation" class="mb-24">
-            <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
-                <div class="bg-blue-600 text-white p-6 flex items-center gap-3">
-                    <i data-lucide="activity"></i>
-                    <h2 class="text-2xl font-bold">Interactive Thermal Simulation</h2>
-                </div>
-                
-                <div class="p-8 grid md:grid-cols-2 gap-12 items-center">
-                    <!-- Area SVG Animasi -->
-                    <div class="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                        <svg width="300" height="350" viewBox="0 0 300 350" id="sim-svg">
-                            <!-- Kipas/Heatsink Atas -->
-                            <g id="heatsink-group">
-                                <rect x="50" y="50" width="200" height="120" fill="#cbd5e1" class="sim-element" id="svg-heatsink" rx="4"/>
-                                <!-- Sirip Heatsink -->
-                                <rect x="60" y="20" width="10" height="30" fill="#94a3b8" />
-                                <rect x="90" y="20" width="10" height="30" fill="#94a3b8" />
-                                <rect x="120" y="20" width="10" height="30" fill="#94a3b8" />
-                                <rect x="150" y="20" width="10" height="30" fill="#94a3b8" />
-                                <rect x="180" y="20" width="10" height="30" fill="#94a3b8" />
-                                <rect x="210" y="20" width="10" height="30" fill="#94a3b8" />
-                                <rect x="240" y="20" width="10" height="30" fill="#94a3b8" />
-                                <text x="150" y="115" fill="#475569" font-weight="bold" text-anchor="middle" font-size="14">HEATSINK</text>
-                            </g>
-
-                            <!-- Indikator Gelombang Panas (Akan muncul jika tanpa pasta) -->
-                            <g id="heat-waves-container" fill="none" stroke="#ef4444" stroke-width="3" opacity="0">
-                                <path d="M 80 160 Q 90 140 80 120" class="heat-wave" />
-                                <path d="M 150 160 Q 160 140 150 120" class="heat-wave" style="animation-delay: 0.5s"/>
-                                <path d="M 220 160 Q 230 140 220 120" class="heat-wave" style="animation-delay: 1s"/>
-                            </g>
-
-                            <!-- Gap / Thermal Paste Layer -->
-                            <rect x="80" y="170" width="140" height="15" fill="#e2e8f0" id="svg-paste-layer" class="sim-element" />
-                            <text x="150" y="182" fill="#64748b" font-size="10" text-anchor="middle" id="paste-label">AIR GAP (Isolator)</text>
-
-                            <!-- CPU -->
-                            <rect x="70" y="185" width="160" height="60" fill="#475569" class="sim-element" id="svg-cpu" rx="6" />
-                            <rect x="90" y="195" width="120" height="40" fill="#334155" rx="2" />
-                            <text x="150" y="220" fill="white" font-weight="bold" text-anchor="middle" font-size="18">CPU</text>
-                            
-                            <!-- Motherboard Base -->
-                            <rect x="20" y="245" width="260" height="20" fill="#166534" rx="4" />
-                            <text x="150" y="260" fill="#86efac" font-size="12" text-anchor="middle">MOTHERBOARD</text>
-                        </svg>
-                    </div>
-
-                    <!-- Panel Kontrol Simulasi -->
-                    <div class="flex flex-col gap-6">
-                        <div>
-                            <h3 class="text-xl font-bold mb-2">Simulation Controls</h3>
-                            <p class="text-slate-600 text-sm mb-4">See how the Second Law of Thermodynamics applies. Heat flows efficiently only when there's a good conductive bridge.</p>
-                        </div>
-
-                        <!-- Monitor Suhu -->
-                        <div class="bg-slate-900 rounded-xl p-6 text-white shadow-inner flex items-center justify-between">
-                            <div>
-                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">CPU Temp</p>
-                                <div class="text-4xl font-mono font-bold flex items-center gap-2">
-                                    <span id="temp-display" class="text-green-400">30</span>
-                                    <span class="text-2xl text-slate-500">°C</span>
-                                </div>
-                            </div>
-                            <div class="h-16 w-4 bg-slate-700 rounded-full overflow-hidden relative">
-                                <div id="temp-bar" class="absolute bottom-0 w-full bg-green-400 transition-all duration-300" style="height: 30%;"></div>
-                            </div>
-                        </div>
-
-                        <!-- Tombol Interaksi -->
-                        <div class="space-y-4">
-                            <button id="btn-power" onclick="togglePower()" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 bg-slate-200 hover:bg-slate-300 text-slate-800 flex items-center justify-center gap-2">
-                                <i data-lucide="power"></i> <span id="power-text">Turn ON CPU</span>
-                            </button>
-                            
-                            <button id="btn-paste" onclick="togglePaste()" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-blue-500 text-blue-600 hover:bg-blue-50 flex items-center justify-center gap-2">
-                                <i data-lucide="droplets"></i> <span id="paste-btn-text">Apply Thermal Paste</span>
-                            </button>
-                        </div>
-                        
-                        <!-- Peringatan / Status -->
-                        <div id="sim-status" class="text-sm font-medium text-slate-500 bg-slate-100 p-4 rounded-lg border border-slate-200">
-                            System Idle. CPU is at room temperature.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-12">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <p class="text-slate-500 mb-4">© 2024 Educational Resource - The Science of Heat & Work</p>
-            <div class="flex justify-center gap-6 text-slate-400">
-                <i data-lucide="book-open" class="hover:text-blue-600 cursor-pointer"></i>
-                <i data-lucide="github" class="hover:text-blue-600 cursor-pointer"></i>
-                <i data-lucide="twitter" class="hover:text-blue-600 cursor-pointer"></i>
-            </div>
+    <!-- FIRST LAW -->
+    <div class="law-card" data-num="1">
+      <div class="law-header">
+        <div class="law-icon red">⚡</div>
+        <div>
+          <h3 style="font-size:1.1rem">First Law</h3>
+          <div class="law-tagline">Conservation of Energy</div>
         </div>
-    </footer>
+        <div style="margin-left:auto"><span class="badge badge-red">Core Law</span></div>
+      </div>
+      <div class="law-vis" style="padding:1.25rem;display:flex;justify-content:center">
+        <svg width="260" height="90" viewBox="0 0 260 90">
+          <rect x="90" y="15" width="80" height="60" rx="8" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
+          <text x="130" y="48" fill="#334155" font-family="'Syne',sans-serif" font-weight="700" font-size="13" text-anchor="middle">System</text>
+          <text x="130" y="62" fill="#64748b" font-size="10" text-anchor="middle">ΔU</text>
+          <path d="M 15 45 L 82 45" stroke="#ef4444" stroke-width="3"/>
+          <polygon points="82,40 90,45 82,50" fill="#ef4444"/>
+          <text x="48" y="35" fill="#ef4444" font-size="10" font-weight="600" text-anchor="middle">Heat (Q)</text>
+          <text x="48" y="57" fill="#ef4444" font-size="9" text-anchor="middle">+In</text>
+          <path d="M 178 45 L 245 45" stroke="#0d7377" stroke-width="3"/>
+          <polygon points="245,40 253,45 245,50" fill="#0d7377"/>
+          <text x="211" y="35" fill="#0d7377" font-size="10" font-weight="600" text-anchor="middle">Work (W)</text>
+          <text x="211" y="57" fill="#0d7377" font-size="9" text-anchor="middle">Out</text>
+          <path d="M 130 75 L 130 88" stroke="#f97316" stroke-width="3"/>
+          <polygon points="125,88 130,93 135,88" fill="#f97316"/>
+          <text x="160" y="90" fill="#f97316" font-size="9" text-anchor="middle">Radiation</text>
+        </svg>
+      </div>
+      <div class="law-body">Energy cannot be created or destroyed — it only changes form. The change in a system's internal energy equals the heat added <em>minus</em> the work done by the system.</div>
+      <div>
+        <div class="formula-label">Mathematical Statement</div>
+        <div class="formula"><span class="formula-val">ΔU = Q − W</span></div>
+      </div>
+      <details class="law-details">
+        <summary>Real-world examples & deeper context</summary>
+        <div class="detail-body">
+          <span class="example-tag">Combustion Engine</span>
+          <p style="margin-bottom:.7rem">Burning fuel (Q in) drives a piston (W out). The engine converts chemical potential energy → thermal → mechanical. Some ΔU heats the engine block.</p>
+          <span class="example-tag">Human Body</span>
+          <p style="margin-bottom:.7rem">Food calories (Q in) power your muscles (W out) and keep your body warm (ΔU). You can't get more work out than the energy stored in food.</p>
+          <span class="example-tag">Key Insight</span>
+          <p>A <strong>perpetual motion machine of the first kind</strong> — producing work without any energy input — is physically impossible under this law.</p>
+        </div>
+      </details>
+    </div>
 
-    <script>
-        // Inisialisasi ikon Lucide dengan pengecekan aman agar tidak terjadi error
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            } else {
-                console.warn('Lucide icons failed to load. Please check your internet connection.');
-            }
-        });
+    <!-- SECOND LAW -->
+    <div class="law-card" data-num="2">
+      <div class="law-header">
+        <div class="law-icon teal">🌊</div>
+        <div>
+          <h3 style="font-size:1.1rem">Second Law</h3>
+          <div class="law-tagline">Entropy Always Increases</div>
+        </div>
+        <div style="margin-left:auto"><span class="badge badge-teal">Direction of Time</span></div>
+      </div>
+      <div class="law-vis" style="padding:1.25rem;display:flex;justify-content:center">
+        <svg width="260" height="90" viewBox="0 0 260 90">
+          <rect x="10" y="15" width="80" height="60" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+          <text x="50" y="44" fill="#92400e" font-family="'Syne',sans-serif" font-weight="700" font-size="13" text-anchor="middle">HOT</text>
+          <text x="50" y="60" fill="#b45309" font-size="10" text-anchor="middle">T_H = 600K</text>
+          <rect x="170" y="15" width="80" height="60" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+          <text x="210" y="44" fill="#1e40af" font-family="'Syne',sans-serif" font-weight="700" font-size="13" text-anchor="middle">COLD</text>
+          <text x="210" y="60" fill="#1d4ed8" font-size="10" text-anchor="middle">T_C = 300K</text>
+          <path d="M 92 45 C 110 25, 145 25, 165 45" stroke="#e07b00" stroke-width="3" fill="none"/>
+          <polygon points="162,40 168,48 157,48" fill="#e07b00"/>
+          <text x="130" y="20" fill="#e07b00" font-size="9" font-weight="600" text-anchor="middle">Natural Flow →</text>
+          <path d="M 165 55 C 145 75, 110 75, 92 55" stroke="#94a3b8" stroke-width="2" fill="none" stroke-dasharray="4,3"/>
+          <text x="130" y="85" fill="#94a3b8" font-size="9" text-anchor="middle">Reverse requires work</text>
+        </svg>
+      </div>
+      <div class="law-body">The total entropy of an isolated system <em>always increases</em> or stays constant. Heat flows spontaneously from hot to cold — never the reverse without external work input.</div>
+      <div>
+        <div class="formula-label">Clausius Inequality</div>
+        <div class="formula"><span class="formula-val">ΔS_total ≥ 0</span>&nbsp;&nbsp;for any real process</div>
+      </div>
+      <details class="law-details">
+        <summary>Real-world examples & deeper context</summary>
+        <div class="detail-body">
+          <span class="example-tag">Refrigerator</span>
+          <p style="margin-bottom:.7rem">A fridge moves heat from cold (inside) to hot (room) — but only by consuming electrical work. It doesn't violate the Second Law; it uses external energy to drive heat "uphill".</p>
+          <span class="example-tag">Arrow of Time</span>
+          <p style="margin-bottom:.7rem">The Second Law explains why time has a direction. A broken egg never reassembles; dissolved sugar never spontaneously crystallises — because the disordered states have vastly higher entropy.</p>
+          <span class="example-tag">Heat Engine Limit</span>
+          <p>No heat engine can be 100% efficient. Some energy is always lost to entropy increase in the cold reservoir — this is why the Carnot limit exists.</p>
+        </div>
+      </details>
+    </div>
 
-        // Smooth scrolling untuk navigasi
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+    <!-- THIRD LAW -->
+    <div class="law-card" data-num="3">
+      <div class="law-header">
+        <div class="law-icon navy">❄️</div>
+        <div>
+          <h3 style="font-size:1.1rem">Third Law</h3>
+          <div class="law-tagline">Absolute Zero</div>
+        </div>
+        <div style="margin-left:auto"><span class="badge badge-navy">Limit</span></div>
+      </div>
+      <div class="law-vis" style="padding:1.25rem;display:flex;justify-content:center">
+        <svg width="260" height="90" viewBox="0 0 260 90">
+          <rect x="15" y="25" width="230" height="22" rx="11" fill="#e2e8f0"/>
+          <rect x="15" y="25" width="20" height="22" rx="11" fill="#06b6d4"/>
+          <text x="18" y="40" fill="#ffffff" font-size="8" font-weight="600">0K</text>
+          <text x="240" y="40" fill="#64748b" font-size="8">∞</text>
+          <!-- Particles frozen vs. active -->
+          <circle cx="80" cy="70" r="5" fill="#06b6d4" opacity=".9"/>
+          <circle cx="100" cy="68" r="5" fill="#06b6d4" opacity=".9"/>
+          <circle cx="120" cy="72" r="5" fill="#06b6d4" opacity=".9"/>
+          <circle cx="140" cy="69" r="5" fill="#06b6d4" opacity=".9"/>
+          <circle cx="160" cy="71" r="5" fill="#06b6d4" opacity=".5"/>
+          <circle cx="180" cy="67" r="5" fill="#ef4444" opacity=".7"/>
+          <circle cx="200" cy="73" r="5" fill="#ef4444" opacity=".9"/>
+          <!-- motion lines for hot particle -->
+          <line x1="200" y1="60" x2="205" y2="55" stroke="#ef4444" stroke-width="1.5" opacity=".6"/>
+          <line x1="207" y1="65" x2="214" y2="63" stroke="#ef4444" stroke-width="1.5" opacity=".6"/>
+          <text x="100" y="88" fill="#06b6d4" font-size="9" text-anchor="middle" font-weight="600">Ordered (S→0)</text>
+          <text x="192" y="88" fill="#ef4444" font-size="9" text-anchor="middle" font-weight="600">Disordered</text>
+        </svg>
+      </div>
+      <div class="law-body">As a system's temperature approaches absolute zero (0 K / −273.15 °C), its entropy approaches a minimum constant value. A perfect crystal at 0 K has exactly zero entropy.</div>
+      <div>
+        <div class="formula-label">Nernst Statement</div>
+        <div class="formula"><span class="formula-val">S → 0</span>&nbsp;&nbsp;as&nbsp;&nbsp;<span class="formula-val">T → 0 K</span></div>
+      </div>
+      <details class="law-details">
+        <summary>Real-world examples & deeper context</summary>
+        <div class="detail-body">
+          <span class="example-tag">Superconductors</span>
+          <p style="margin-bottom:.7rem">Near absolute zero, certain materials exhibit <strong>superconductivity</strong> — zero electrical resistance — a direct consequence of quantum states becoming ordered.</p>
+          <span class="example-tag">Why Can't We Reach 0 K?</span>
+          <p style="margin-bottom:.7rem">The Third Law implies that it would take an <em>infinite</em> number of steps to cool a system to exactly absolute zero. It is an asymptotic limit — you get ever closer but never arrive.</p>
+          <span class="example-tag">Coldest Place</span>
+          <p>NASA's Cold Atom Lab aboard the ISS has cooled atoms to 100 pico-Kelvin (0.0000000001 K) — a billionth of a degree above absolute zero.</p>
+        </div>
+      </details>
+    </div>
 
-        // --- Logika Simulasi Termal ---
-        
-        // Status Variabel
-        let isPowerOn = false;
-        let hasPaste = false;
-        let currentTemp = 30; // Suhu ruangan
-        let simInterval;
+  </div>
+</section>
+<hr class="divider"/>
 
-        // Elemen DOM
-        const displayTemp = document.getElementById('temp-display');
-        const barTemp = document.getElementById('temp-bar');
-        const svgCpu = document.getElementById('svg-cpu');
-        const svgHeatsink = document.getElementById('svg-heatsink');
-        const svgPasteLayer = document.getElementById('svg-paste-layer');
-        const pasteLabel = document.getElementById('paste-label');
-        const btnPower = document.getElementById('btn-power');
-        const powerText = document.getElementById('power-text');
-        const btnPaste = document.getElementById('btn-paste');
-        const pasteBtnText = document.getElementById('paste-btn-text');
-        const statusText = document.getElementById('sim-status');
-        const heatWaves = document.getElementById('heat-waves-container');
+<!-- ═══════════════════════ THERMODYNAMIC PROCESSES ══════════════════════════ -->
+<div class="section-wrap" id="processes" style="padding-top:3rem;padding-bottom:3rem">
+  <div class="processes-section">
+    <div class="processes-inner">
+      <div class="section-tag">Module 02</div>
+      <div class="section-title">Thermodynamic Processes</div>
+      <div class="section-sub">Each process holds a different variable constant, leading to fundamentally different behaviour of a gas system.</div>
+      <div class="proc-grid">
+        <div class="proc-card">
+          <div class="proc-dot" style="background:#f8d76b"></div>
+          <div class="proc-name">Isothermal</div>
+          <div class="proc-const">Constant: T</div>
+          <div class="proc-desc">Temperature held fixed. Heat absorbed equals work done. Follows PV = const. Examples: slow compression in a water bath.</div>
+        </div>
+        <div class="proc-card">
+          <div class="proc-dot" style="background:#f87171"></div>
+          <div class="proc-name">Adiabatic</div>
+          <div class="proc-const">Constant: Q = 0</div>
+          <div class="proc-desc">No heat exchange with surroundings. Work changes internal energy only. Air rising rapidly in atmosphere cools adiabatically.</div>
+        </div>
+        <div class="proc-card">
+          <div class="proc-dot" style="background:#4ade80"></div>
+          <div class="proc-name">Isobaric</div>
+          <div class="proc-const">Constant: P</div>
+          <div class="proc-desc">Pressure held fixed. Most common in everyday life — boiling water at atmospheric pressure is isobaric.</div>
+        </div>
+        <div class="proc-card">
+          <div class="proc-dot" style="background:#60a5fa"></div>
+          <div class="proc-name">Isochoric</div>
+          <div class="proc-const">Constant: V</div>
+          <div class="proc-desc">Volume is fixed; no work done (W = 0). All heat goes into internal energy. Pressure cooker explosions occur at isochoric-like conditions.</div>
+        </div>
+        <div class="proc-card">
+          <div class="proc-dot" style="background:#c084fc"></div>
+          <div class="proc-name">Polytropic</div>
+          <div class="proc-const">PV^n = const</div>
+          <div class="proc-desc">Generalised process encompassing all the above (n = 0 isobaric, n = 1 isothermal, n = γ adiabatic, n = ∞ isochoric).</div>
+        </div>
+      </div>
 
-        // Fungsi mengaktifkan/mematikan CPU
-        function togglePower() {
-            isPowerOn = !isPowerOn;
-            if (isPowerOn) {
-                btnPower.classList.replace('bg-slate-200', 'bg-red-500');
-                btnPower.classList.replace('hover:bg-slate-300', 'hover:bg-red-600');
-                btnPower.classList.replace('text-slate-800', 'text-white');
-                powerText.innerText = "Turn OFF CPU";
-                startSimulation();
-            } else {
-                btnPower.classList.replace('bg-red-500', 'bg-slate-200');
-                btnPower.classList.replace('hover:bg-red-600', 'hover:bg-slate-300');
-                btnPower.classList.replace('text-white', 'text-slate-800');
-                powerText.innerText = "Turn ON CPU";
-            }
-            updateStatus();
-        }
+      <!-- PV DIAGRAM -->
+      <div style="margin-top:2.5rem">
+        <h4 style="color:#fff;font-family:var(--font-d);margin-bottom:1rem;font-size:1.1rem">P–V Diagram: All Four Processes</h4>
+        <div style="background:rgba(0,0,0,.3);border-radius:var(--r);padding:1.5rem;display:flex;justify-content:center">
+          <svg width="480" height="260" viewBox="0 0 480 260" style="max-width:100%">
+            <!-- Axes -->
+            <line x1="50" y1="220" x2="450" y2="220" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="50" y1="10"  x2="50"  y2="220" stroke="#94a3b8" stroke-width="2"/>
+            <text x="460" y="224" fill="#94a3b8" font-size="12">V</text>
+            <text x="40"  y="8"   fill="#94a3b8" font-size="12">P</text>
+            <!-- Grid -->
+            <line x1="50" y1="170" x2="450" y2="170" stroke="#2d3748" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="50" y1="120" x2="450" y2="120" stroke="#2d3748" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="50" y1="70"  x2="450" y2="70"  stroke="#2d3748" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="150" y1="10" x2="150" y2="220" stroke="#2d3748" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="250" y1="10" x2="250" y2="220" stroke="#2d3748" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="350" y1="10" x2="350" y2="220" stroke="#2d3748" stroke-width="1" stroke-dasharray="4,4"/>
+            <!-- Isothermal: hyperbola PV=const -->
+            <path d="M 80 30 Q 180 90 380 200" stroke="#f8d76b" stroke-width="2.5" fill="none"/>
+            <text x="385" y="196" fill="#f8d76b" font-size="11" font-weight="600">Isothermal</text>
+            <!-- Adiabatic: steeper hyperbola -->
+            <path d="M 80 20 Q 150 60 300 210" stroke="#f87171" stroke-width="2.5" fill="none"/>
+            <text x="305" y="206" fill="#f87171" font-size="11" font-weight="600">Adiabatic</text>
+            <!-- Isobaric: horizontal line -->
+            <line x1="80" y1="140" x2="380" y2="140" stroke="#4ade80" stroke-width="2.5"/>
+            <text x="385" y="144" fill="#4ade80" font-size="11" font-weight="600">Isobaric</text>
+            <!-- Isochoric: vertical line -->
+            <line x1="200" y1="30" x2="200" y2="210" stroke="#60a5fa" stroke-width="2.5"/>
+            <text x="204" y="26" fill="#60a5fa" font-size="11" font-weight="600">Isochoric</text>
+            <!-- Start point -->
+            <circle cx="80" cy="140" r="5" fill="#fff" opacity=".8"/>
+            <text x="60" y="156" fill="#fff" font-size="9" opacity=".6">Initial state</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="divider"/>
 
-        // Fungsi menambah/menghapus Thermal Paste
-        function togglePaste() {
-            hasPaste = !hasPaste;
-            if (hasPaste) {
-                svgPasteLayer.setAttribute('fill', '#94a3b8'); // Warna pasta abu-abu pekat
-                pasteLabel.textContent = "THERMAL PASTE (Conductor)";
-                pasteLabel.setAttribute('fill', '#ffffff');
-                btnPaste.classList.replace('border-blue-500', 'bg-blue-500');
-                btnPaste.classList.replace('text-blue-600', 'text-white');
-                pasteBtnText.innerText = "Remove Thermal Paste";
-            } else {
-                svgPasteLayer.setAttribute('fill', '#e2e8f0'); // Warna udara/gap
-                pasteLabel.textContent = "AIR GAP (Isolator)";
-                pasteLabel.setAttribute('fill', '#64748b');
-                btnPaste.classList.replace('bg-blue-500', 'border-blue-500');
-                btnPaste.classList.replace('text-white', 'text-blue-600');
-                pasteBtnText.innerText = "Apply Thermal Paste";
-            }
-            updateStatus();
-        }
+<!-- ═══════════════════════════ CARNOT CYCLE ═════════════════════════════════ -->
+<section class="section-wrap" id="carnot">
+  <div class="section-tag">Module 03</div>
+  <div class="section-title">The Carnot Cycle</div>
+  <div class="section-sub">The most efficient heat engine theoretically possible. Invented by Sadi Carnot in 1824, it sets the absolute upper limit on engine efficiency.</div>
 
-        // Loop utama simulasi
-        function startSimulation() {
-            if (simInterval) clearInterval(simInterval);
-            
-            simInterval = setInterval(() => {
-                // Kalkulasi perpindahan panas berdasarkan Hukum Termodinamika Ke-1 & Ke-2
-                if (isPowerOn) {
-                    let heatGeneration = 4.0; // CPU menghasilkan panas
-                    let heatDissipation;
+  <div class="carnot-grid">
+    <!-- SVG -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem">
+      <svg id="carnot-svg" width="100%" viewBox="0 0 320 320" style="max-height:340px">
+        <!-- Axes -->
+        <line x1="40" y1="280" x2="300" y2="280" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="40" y1="20"  x2="40"  y2="280" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="310" y="284" fill="#94a3b8" font-size="11">V</text>
+        <text x="30" y="15" fill="#94a3b8" font-size="11">P</text>
 
-                    // Jika ada pasta, panas berpindah efektif ke heatsink
-                    if (hasPaste) {
-                        heatDissipation = 3.5; 
-                    } else {
-                        // Jika udara saja (tanpa pasta), perpindahan panas sangat lambat
-                        heatDissipation = 0.5; 
-                    }
-                    
-                    currentTemp += (heatGeneration - heatDissipation);
-                    
-                    // Batas maksimal suhu
-                    if (currentTemp > 110) currentTemp = 110;
-                } else {
-                    // Pendinginan natural jika dimatikan
-                    currentTemp -= 2.0;
-                    if (currentTemp < 30) currentTemp = 30; // Suhu ambient
-                }
+        <!-- Carnot cycle path: 4 processes -->
+        <!-- 1→2 Isothermal expansion (top) -->
+        <path id="c1" d="M 70 60 Q 150 90 220 140" stroke="#e07b00" stroke-width="3" fill="none" opacity=".3"/>
+        <!-- 2→3 Adiabatic expansion -->
+        <path id="c2" d="M 220 140 Q 235 180 240 260" stroke="#ef4444" stroke-width="3" fill="none" opacity=".3"/>
+        <!-- 3→4 Isothermal compression (bottom) -->
+        <path id="c3" d="M 240 260 Q 160 230 95 210" stroke="#0d7377" stroke-width="3" fill="none" opacity=".3"/>
+        <!-- 4→1 Adiabatic compression -->
+        <path id="c4" d="M 95 210 Q 75 140 70 60" stroke="#3b82f6" stroke-width="3" fill="none" opacity=".3"/>
 
-                updateUI();
+        <!-- Shaded cycle area -->
+        <path d="M 70 60 Q 150 90 220 140 Q 235 180 240 260 Q 160 230 95 210 Q 75 140 70 60Z"
+              fill="rgba(224,123,0,.08)" stroke="none"/>
 
-                // Hentikan interval jika CPU mati dan sudah dingin
-                if (!isPowerOn && currentTemp <= 30) {
-                    clearInterval(simInterval);
-                }
-            }, 500); // Update setiap setengah detik
-        }
+        <!-- State points -->
+        <circle id="pt1" cx="70" cy="60" r="6" fill="#e07b00"/>
+        <circle id="pt2" cx="220" cy="140" r="6" fill="#ef4444"/>
+        <circle id="pt3" cx="240" cy="260" r="6" fill="#0d7377"/>
+        <circle id="pt4" cx="95" cy="210" r="6" fill="#3b82f6"/>
 
-        // Update Visual dan Angka
-        function updateUI() {
-            let tempRound = Math.round(currentTemp);
-            displayTemp.innerText = tempRound;
-            
-            // Update tinggi bar indikator suhu (max 110C)
-            let percent = Math.min((currentTemp / 110) * 100, 100);
-            barTemp.style.height = `${percent}%`;
+        <!-- Labels -->
+        <text x="58" y="52" fill="#e07b00" font-size="10" font-weight="700">1</text>
+        <text x="225" y="136" fill="#ef4444" font-size="10" font-weight="700">2</text>
+        <text x="245" y="258" fill="#0d7377" font-size="10" font-weight="700">3</text>
+        <text x="88" y="206" fill="#3b82f6" font-size="10" font-weight="700">4</text>
 
-            // Ubah Warna Teks dan Bar berdasarkan Suhu
-            displayTemp.className = 'text-4xl font-mono font-bold flex items-center gap-2 transition-colors';
-            barTemp.className = 'absolute bottom-0 w-full transition-all duration-300';
-            
-            if (currentTemp < 50) {
-                displayTemp.classList.add('text-green-400');
-                barTemp.classList.add('bg-green-400');
-            } else if (currentTemp < 85) {
-                displayTemp.classList.add('text-yellow-400');
-                barTemp.classList.add('bg-yellow-400');
-            } else {
-                displayTemp.classList.add('text-red-500');
-                barTemp.classList.add('bg-red-500');
-            }
+        <!-- Process labels -->
+        <text x="145" y="74" fill="#e07b00" font-size="9">Isothermal (T_H)</text>
+        <text x="238" y="200" fill="#ef4444" font-size="9">Adiabatic</text>
+        <text x="135" y="262" fill="#0d7377" font-size="9">Isothermal (T_C)</text>
+        <text x="46" y="130" fill="#3b82f6" font-size="9">Adiabatic</text>
 
-            // Update warna SVG CPU
-            svgCpu.setAttribute('fill', getTempColor(currentTemp));
+        <!-- W_net label -->
+        <text x="148" y="175" fill="#64748b" font-size="10" text-anchor="middle" font-style="italic">W_net</text>
+        <text x="148" y="190" fill="#64748b" font-size="9" text-anchor="middle">(shaded area)</text>
+      </svg>
+    </div>
 
-            // Update warna SVG Heatsink (Heatsink menyerap panas jika ada pasta)
-            let hsTemp = hasPaste ? (currentTemp - 20) : 30;
-            if (hsTemp < 30) hsTemp = 30;
-            svgHeatsink.setAttribute('fill', getHeatsinkColor(hsTemp));
+    <!-- Info Panel -->
+    <div class="carnot-info">
+      <div class="carnot-step active" id="cs1">
+        <div class="carnot-step-num">1→2</div>
+        <div>
+          <div class="carnot-step-title">Isothermal Expansion</div>
+          <div class="carnot-step-desc">Gas expands at constant temperature T_H. Heat Q_H is absorbed from the hot reservoir. Work is done by the gas.</div>
+        </div>
+      </div>
+      <div class="carnot-step" id="cs2">
+        <div class="carnot-step-num">2→3</div>
+        <div>
+          <div class="carnot-step-title">Adiabatic Expansion</div>
+          <div class="carnot-step-desc">Gas expands with no heat exchange. Temperature drops from T_H to T_C. Work is still done by the gas.</div>
+        </div>
+      </div>
+      <div class="carnot-step" id="cs3">
+        <div class="carnot-step-num">3→4</div>
+        <div>
+          <div class="carnot-step-title">Isothermal Compression</div>
+          <div class="carnot-step-desc">Gas is compressed at constant temperature T_C. Heat Q_C is rejected to the cold reservoir.</div>
+        </div>
+      </div>
+      <div class="carnot-step" id="cs4">
+        <div class="carnot-step-num">4→1</div>
+        <div>
+          <div class="carnot-step-title">Adiabatic Compression</div>
+          <div class="carnot-step-desc">Gas is compressed with no heat exchange. Temperature rises back to T_H, completing the cycle.</div>
+        </div>
+      </div>
 
-            // Efek gelombang panas visual jika overheating (suhu > 90 dan tanpa pasta)
-            if (currentTemp > 90 && !hasPaste) {
-                heatWaves.setAttribute('opacity', '1');
-            } else {
-                heatWaves.setAttribute('opacity', '0');
-            }
+      <!-- Efficiency Calculator -->
+      <div class="efficiency-box">
+        <div class="efficiency-label">Carnot Efficiency</div>
+        <div class="efficiency-formula">η = 1 − (T_C / T_H)</div>
+        <div class="eff-inputs">
+          <div class="eff-input-wrap">
+            <label>T_H — Hot reservoir (K)</label>
+            <input type="number" id="t-hot" value="600" min="1" oninput="calcEfficiency()"/>
+          </div>
+          <div class="eff-input-wrap">
+            <label>T_C — Cold reservoir (K)</label>
+            <input type="number" id="t-cold" value="300" min="1" oninput="calcEfficiency()"/>
+          </div>
+        </div>
+        <div class="efficiency-result" id="eff-result">50.0%</div>
+        <div class="efficiency-sub" id="eff-sub">Maximum possible efficiency between these temperatures</div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider"/>
 
-            updateStatus();
-        }
+<!-- ═══════════════════════════ ENTROPY VISUALIZER ═══════════════════════════ -->
+<section class="section-wrap" id="entropy">
+  <div class="section-tag">Module 04</div>
+  <div class="section-title">Entropy Particle Visualizer</div>
+  <div class="section-sub">Watch disorder increase in real-time. Entropy is not chaos — it's the statistical tendency towards more probable states.</div>
 
-        // Helper: Gradasi warna Suhu CPU
-        function getTempColor(temp) {
-            if (temp <= 30) return '#475569'; // Abu-abu slate (Dingin)
-            if (temp > 100) return '#b91c1c'; // Merah gelap (Throttling/Bahaya)
-            
-            // Kalkulasi warna dari kuning ke merah
-            let ratio = (temp - 30) / 70; 
-            let r = Math.min(255, 100 + (ratio * 155));
-            let g = Math.max(0, 150 - (ratio * 150));
-            let b = 50;
-            return `rgb(${r}, ${g}, ${b})`;
-        }
+  <div class="entropy-section">
+    <div class="entropy-header">
+      <div>
+        <h3 style="font-family:var(--font-d);font-size:1.1rem;margin-bottom:.25rem">Live Particle System</h3>
+        <p style="font-size:.85rem;color:var(--muted)">Particles confined to a partition. Release the barrier to watch entropy increase.</p>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <div class="entropy-stat">
+          <div class="entropy-stat-label">Order</div>
+          <div class="entropy-stat-val" id="entropy-order" style="color:var(--teal)">100%</div>
+        </div>
+        <div class="entropy-stat">
+          <div class="entropy-stat-label">Entropy S</div>
+          <div class="entropy-stat-val" id="entropy-val" style="color:var(--amber)">0.00</div>
+        </div>
+        <div class="entropy-stat">
+          <div class="entropy-stat-label">Temperature</div>
+          <div class="entropy-stat-val" id="entropy-temp" style="color:var(--red)">298 K</div>
+        </div>
+      </div>
+    </div>
+    <div class="entropy-canvas-wrap">
+      <canvas id="entropy-canvas" width="560" height="220" style="border-radius:8px;max-width:100%"></canvas>
+    </div>
+    <div class="entropy-controls">
+      <button onclick="entropyRelease()" id="btn-release" class="btn-primary" style="font-size:.9rem;padding:.6rem 1.5rem">Release Barrier</button>
+      <button onclick="entropyReset()" class="btn-outline" style="font-size:.9rem;padding:.6rem 1.5rem;border-color:var(--border)">Reset</button>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-left:auto">
+        <label style="font-size:.83rem;color:var(--muted)">Temperature</label>
+        <input type="range" id="temp-slider" min="1" max="5" value="3" style="width:100px" oninput="updateTemp()"/>
+        <span id="temp-label" style="font-size:.83rem;font-family:var(--font-m);color:var(--amber)">298K</span>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider"/>
 
-        // Helper: Gradasi warna Heatsink
-        function getHeatsinkColor(temp) {
-            if (temp <= 30) return '#cbd5e1'; 
-            let ratio = (temp - 30) / 60;
-            let r = Math.min(255, 203 + (ratio * 50));
-            let g = Math.max(100, 213 - (ratio * 50));
-            let b = Math.max(50, 225 - (ratio * 100));
-            return `rgb(${r}, ${g}, ${b})`;
-        }
+<!-- ═══════════════════════════ CPU SIMULATION (ENHANCED) ════════════════════ -->
+<section class="section-wrap" id="simulation">
+  <div class="section-tag">Module 05 — Applied</div>
+  <div class="section-title">CPU Thermal Management</div>
+  <div class="section-sub">Thermodynamics in your PC. Control the CPU, thermal paste and fan to see the Second Law in action.</div>
 
-        // Perbarui teks status simulasi
-        function updateStatus() {
-            if (!isPowerOn && currentTemp <= 30) {
-                statusText.innerHTML = "System Idle. CPU is at room temperature.";
-                statusText.className = "text-sm font-medium text-slate-500 bg-slate-100 p-4 rounded-lg border border-slate-200";
-            } else if (isPowerOn && !hasPaste) {
-                if (currentTemp > 90) {
-                    statusText.innerHTML = "⚠️ <b>WARNING: Thermal Throttling!</b> Air gap prevents heat transfer. CPU is overheating.";
-                    statusText.className = "text-sm font-medium text-red-700 bg-red-100 p-4 rounded-lg border border-red-200 animate-pulse";
-                } else {
-                    statusText.innerHTML = "CPU running without thermal paste. Heat is building up rapidly in the CPU.";
-                    statusText.className = "text-sm font-medium text-yellow-700 bg-yellow-100 p-4 rounded-lg border border-yellow-200";
-                }
-            } else if (isPowerOn && hasPaste) {
-                statusText.innerHTML = "✅ <b>Optimal Cooling.</b> Thermal paste is efficiently transferring heat (entropy) from CPU to Heatsink.";
-                statusText.className = "text-sm font-medium text-green-700 bg-green-100 p-4 rounded-lg border border-green-200";
-            }
-        }
-    </script>
+  <div class="sim-grid">
+    <!-- SVG Visual -->
+    <div style="background:var(--navy);border-radius:var(--r);padding:1.75rem;display:flex;flex-direction:column;align-items:center;gap:1rem">
+      <svg width="280" height="320" viewBox="0 0 280 320" id="sim-svg">
+        <!-- Fan blades group (animated) -->
+        <g id="fan-blades" class="fan-anim" transform="translate(140,110) rotate(0) translate(-140,-110)">
+          <ellipse cx="140" cy="70"  rx="18" ry="32" fill="#475569" opacity=".9" transform="rotate(0,140,110)"/>
+          <ellipse cx="140" cy="70"  rx="18" ry="32" fill="#475569" opacity=".9" transform="rotate(72,140,110)"/>
+          <ellipse cx="140" cy="70"  rx="18" ry="32" fill="#475569" opacity=".7" transform="rotate(144,140,110)"/>
+          <ellipse cx="140" cy="70"  rx="18" ry="32" fill="#475569" opacity=".7" transform="rotate(216,140,110)"/>
+          <ellipse cx="140" cy="70"  rx="18" ry="32" fill="#475569" opacity=".9" transform="rotate(288,140,110)"/>
+          <circle cx="140" cy="110" r="10" fill="#64748b"/>
+        </g>
+        <!-- Heatsink fins -->
+        <g id="heatsink-fins">
+          <rect x="55" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin1"/>
+          <rect x="75" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin2"/>
+          <rect x="95" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin3"/>
+          <rect x="115" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin4"/>
+          <rect x="135" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin5"/>
+          <rect x="155" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin6"/>
+          <rect x="175" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin7"/>
+          <rect x="195" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin8"/>
+          <rect x="215" y="130" width="12" height="38" rx="2" fill="#94a3b8" id="fin9"/>
+        </g>
+        <!-- Heatsink base -->
+        <rect x="48" y="168" width="184" height="22" rx="4" fill="#cbd5e1" id="svg-heatsink"/>
+        <text x="140" y="183" fill="#475569" font-size="11" font-weight="700" text-anchor="middle" font-family="'Syne',sans-serif">HEATSINK</text>
+        <!-- Heat waves (shown without paste) -->
+        <g id="heat-waves" opacity="0">
+          <path d="M 90 195 Q 100 180 90 168" stroke="#ef4444" stroke-width="2.5" fill="none" style="animation:heat 1.5s infinite;animation-delay:0s"/>
+          <path d="M 140 195 Q 150 178 140 168" stroke="#ef4444" stroke-width="2.5" fill="none" style="animation:heat 1.5s infinite;animation-delay:.5s"/>
+          <path d="M 190 195 Q 200 180 190 168" stroke="#ef4444" stroke-width="2.5" fill="none" style="animation:heat 1.5s infinite;animation-delay:1s"/>
+        </g>
+        <!-- Thermal paste layer -->
+        <rect x="70" y="190" width="140" height="14" rx="2" fill="#e2e8f0" id="svg-paste"/>
+        <text x="140" y="200" fill="#94a3b8" font-size="8" text-anchor="middle" id="paste-lbl">AIR GAP</text>
+        <!-- CPU -->
+        <rect x="58" y="204" width="164" height="58" rx="6" fill="#334155" id="svg-cpu"/>
+        <rect x="74" y="214" width="132" height="38" rx="3" fill="#1e293b"/>
+        <text x="140" y="237" fill="white" font-size="16" font-weight="800" text-anchor="middle" font-family="'Syne',sans-serif">CPU</text>
+        <text x="140" y="251" fill="#64748b" font-size="9" text-anchor="middle" id="svg-cpu-label">IDLE</text>
+        <!-- Motherboard -->
+        <rect x="20" y="262" width="240" height="18" rx="4" fill="#166534"/>
+        <text x="140" y="275" fill="#86efac" font-size="10" text-anchor="middle" font-family="'Syne',sans-serif">MOTHERBOARD</text>
+        <!-- Temp bar on right -->
+        <rect x="258" y="130" width="12" height="148" rx="6" fill="#1e293b"/>
+        <rect x="258" y="130" width="12" height="148" rx="6" fill="#1e293b"/>
+        <rect id="temp-bar-svg" x="258" y="254" width="12" height="24" rx="6" fill="#4ade80"/>
+        <text x="264" y="124" fill="#94a3b8" font-size="8" text-anchor="middle">MAX</text>
+        <text x="264" y="295" fill="#94a3b8" font-size="8" text-anchor="middle">MIN</text>
+      </svg>
+    </div>
+
+    <!-- Controls Panel -->
+    <div class="sim-panel">
+      <!-- Temp Monitor -->
+      <div class="temp-monitor">
+        <div class="temp-metric">
+          <div class="temp-metric-val" id="cpu-temp-val" style="color:#4ade80">30°C</div>
+          <div class="temp-metric-label">CPU Temp</div>
+        </div>
+        <div class="temp-metric">
+          <div class="temp-metric-val" id="hs-temp-val" style="color:#4ade80">28°C</div>
+          <div class="temp-metric-label">Heatsink</div>
+        </div>
+        <div class="temp-metric">
+          <div class="temp-metric-val" id="throttle-val" style="color:#4ade80">—</div>
+          <div class="temp-metric-label">Status</div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <button id="btn-power" class="sim-btn sim-btn-power" onclick="simTogglePower()">⚡ Turn ON CPU</button>
+        <button id="btn-paste" class="sim-btn sim-btn-paste" onclick="simTogglePaste()">💧 Apply Thermal Paste</button>
+        <button id="btn-fan"   class="sim-btn sim-btn-fan"   onclick="simToggleFan()">🌀 Enable Fan Cooling</button>
+      </div>
+
+      <!-- Status -->
+      <div id="sim-status" class="status-box status-idle">System idle — CPU at ambient temperature (30 °C).</div>
+
+      <!-- Log Panel -->
+      <div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.06em">System Log</div>
+        <div class="log-panel" id="sim-log">
+          <div class="log-entry"><span class="log-time">[00:00]</span>System initialised. Ambient: 30°C.</div>
+        </div>
+      </div>
+
+      <!-- Thermal Resistance Indicator -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:1rem">
+        <div style="font-size:.8rem;font-weight:600;margin-bottom:.6rem;color:var(--muted)">THERMAL RESISTANCE PATH</div>
+        <div style="display:flex;align-items:center;gap:.3rem;font-size:.75rem;font-family:var(--font-m)">
+          <span style="background:var(--red-l);color:var(--red);padding:.2rem .5rem;border-radius:4px">CPU</span>
+          <span>→</span>
+          <span id="tr-paste" style="background:var(--border);color:var(--muted);padding:.2rem .5rem;border-radius:4px">Air Gap ≈ 30 °C/W</span>
+          <span>→</span>
+          <span style="background:var(--surface2);color:var(--text);padding:.2rem .5rem;border-radius:4px">Heatsink</span>
+          <span>→</span>
+          <span id="tr-fan" style="background:var(--border);color:var(--muted);padding:.2rem .5rem;border-radius:4px">Still Air</span>
+          <span>→</span>
+          <span style="background:var(--teal-l);color:var(--teal);padding:.2rem .5rem;border-radius:4px">Ambient</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider"/>
+
+<!-- ═══════════════════════════ FORMULA CALCULATOR ═══════════════════════════ -->
+<section class="section-wrap" id="calculator">
+  <div class="section-tag">Module 06 — Tools</div>
+  <div class="section-title">Formula Calculator</div>
+  <div class="section-sub">Solve common thermodynamics problems. Select a formula, enter your known values, and get the result instantly.</div>
+
+  <div class="grid-2">
+    <div class="calc-section">
+      <h3 style="font-family:var(--font-d);margin-bottom:1rem">Thermodynamic Calculator</h3>
+      <select class="calc-select" id="calc-formula" onchange="renderCalcFields()">
+        <option value="">— Select a formula —</option>
+        <option value="first">First Law: ΔU = Q − W</option>
+        <option value="carnot">Carnot Efficiency: η = 1 − T_C/T_H</option>
+        <option value="heat">Heat Transfer: Q = mcΔT</option>
+        <option value="entropy">Entropy Change: ΔS = Q_rev / T</option>
+        <option value="ideal">Ideal Gas: PV = nRT</option>
+        <option value="work">Work by Gas: W = PΔV</option>
+      </select>
+      <div id="calc-fields" class="calc-fields"></div>
+      <button onclick="runCalc()" class="btn-primary" style="margin-bottom:1rem;width:100%">Calculate →</button>
+      <div class="calc-result" id="calc-result">Result appears here</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:var(--r);padding:2rem">
+      <h3 style="font-family:var(--font-d);margin-bottom:1.25rem;font-size:1.1rem">Common Constants</h3>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div style="display:flex;justify-content:space-between;font-size:.9rem;padding:.6rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Universal Gas Constant (R)</span>
+          <span style="font-family:var(--font-m)">8.314 J/(mol·K)</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.9rem;padding:.6rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Boltzmann Constant (k_B)</span>
+          <span style="font-family:var(--font-m)">1.38 × 10⁻²³ J/K</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.9rem;padding:.6rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Absolute Zero</span>
+          <span style="font-family:var(--font-m)">0 K = −273.15 °C</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.9rem;padding:.6rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Water specific heat (c)</span>
+          <span style="font-family:var(--font-m)">4186 J/(kg·K)</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.9rem;padding:.6rem 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">Stefan-Boltzmann (σ)</span>
+          <span style="font-family:var(--font-m)">5.67 × 10⁻⁸ W/(m²·K⁴)</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.9rem;padding:.6rem 0">
+          <span style="color:var(--muted)">Avogadro Number (Nₐ)</span>
+          <span style="font-family:var(--font-m)">6.022 × 10²³ mol⁻¹</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider"/>
+
+<!-- ═══════════════════════════════ QUIZ ═════════════════════════════════════ -->
+<section class="section-wrap" id="quiz">
+  <div class="section-tag">Module 07 — Test</div>
+  <div class="section-title">Knowledge Quiz</div>
+  <div class="section-sub">10 questions covering all four laws, processes, and real applications. See how well you've mastered thermodynamics.</div>
+
+  <div class="quiz-section" style="max-width:640px">
+    <div class="quiz-header">
+      <h3>Thermodynamics Assessment</h3>
+      <p>Select the best answer for each question</p>
+    </div>
+    <div class="quiz-body" id="quiz-body">
+      <div class="quiz-progress" id="quiz-progress"></div>
+      <div id="quiz-question-wrap">
+        <div class="quiz-q" id="quiz-q-text"></div>
+        <div class="quiz-options" id="quiz-opts"></div>
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+        <button id="quiz-next-btn" onclick="quizNext()" class="btn-primary" style="display:none">Next Question →</button>
+      </div>
+      <div class="quiz-score" id="quiz-score">
+        <div class="quiz-score-num" id="score-num">0/10</div>
+        <div class="quiz-score-label" id="score-label">Quiz Complete</div>
+        <div class="quiz-score-msg" id="score-msg"></div>
+        <button onclick="quizRestart()" class="btn-primary">Restart Quiz</button>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider"/>
+
+<!-- ═══════════════════════════ GLOSSARY ═════════════════════════════════════ -->
+<section class="section-wrap" id="glossary">
+  <div class="section-tag">Module 08 — Reference</div>
+  <div class="section-title">Glossary of Terms</div>
+  <div class="section-sub">A quick-reference dictionary of essential thermodynamic concepts, symbols, and definitions.</div>
+
+  <input type="text" class="glossary-search" placeholder="🔍  Search terms, symbols, or definitions..." oninput="filterGlossary(this.value)"/>
+  <div class="glossary-grid" id="glossary-grid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">🔥 <span>Thermo</span>Master</div>
+    <div class="footer-links">
+      <a href="#intro">Introduction</a>
+      <a href="#laws">4 Laws</a>
+      <a href="#processes">Processes</a>
+      <a href="#carnot">Carnot</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+    <div class="footer-copy">© 2024 ThermoMaster — Educational Physics Resource</div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════ JS ════════════════════════════════════ -->
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+// ── NAV ACTIVE ──
+const navLinks = document.querySelectorAll('.nav-links a');
+const sections = document.querySelectorAll('section[id], div[id]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+});
+
+// ── CARNOT EFFICIENCY ──
+function calcEfficiency() {
+  const th = parseFloat(document.getElementById('t-hot').value)  || 0;
+  const tc = parseFloat(document.getElementById('t-cold').value) || 0;
+  const res = document.getElementById('eff-result');
+  const sub = document.getElementById('eff-sub');
+  if (th <= 0 || tc < 0 || tc >= th) {
+    res.textContent = 'Invalid';
+    sub.textContent = 'T_H must be greater than T_C, both in Kelvin.';
+    return;
+  }
+  const eff = (1 - tc / th) * 100;
+  res.textContent = eff.toFixed(1) + '%';
+  sub.textContent = eff > 80 ? '🔥 Extremely high efficiency — unrealistic in practice.'
+                 : eff > 50 ? '✅ High theoretical efficiency.'
+                 : eff > 30 ? '⚠️ Moderate efficiency — typical of real engines.'
+                 : '❄️ Low efficiency — small temperature difference.';
+}
+
+// Animate Carnot steps on scroll (simple hover simulation)
+let carnotStep = 0;
+const carnotSteps = ['cs1','cs2','cs3','cs4'];
+setInterval(() => {
+  document.querySelectorAll('.carnot-step').forEach(el => el.classList.remove('active'));
+  document.getElementById(carnotSteps[carnotStep]).classList.add('active');
+  // Highlight PV paths
+  ['c1','c2','c3','c4'].forEach((id, i) => {
+    document.getElementById(id).style.opacity = i === carnotStep ? '1' : '.25';
+  });
+  carnotStep = (carnotStep + 1) % 4;
+}, 1800);
+
+// ── ENTROPY CANVAS ──
+const eCanvas = document.getElementById('entropy-canvas');
+const eCtx    = eCanvas.getContext('2d');
+let particles = [], released = false, eTemp = 3, eAnimId;
+
+function createParticles() {
+  particles = [];
+  const count = 60;
+  for (let i = 0; i < count; i++) {
+    const left = i < count / 2;
+    particles.push({
+      x: left ? 20 + Math.random() * 220 : 20 + Math.random() * 220,
+      y: 10 + Math.random() * 200,
+      vx: (Math.random() - .5) * 1.5,
+      vy: (Math.random() - .5) * 1.5,
+      r: 4,
+      c: left ? '#e07b00' : '#0d7377',
+      side: left ? 'L' : 'R',
+      hot: left
+    });
+  }
+  // Force left half
+  particles.forEach((p, i) => {
+    if (p.hot) { p.x = 20 + Math.random() * 240; }
+    else        { p.x = 290 + Math.random() * 240; }
+  });
+  released = false;
+  document.getElementById('btn-release').disabled = false;
+  updateEntropyStats();
+}
+
+function entropyRelease() {
+  released = true;
+  document.getElementById('btn-release').disabled = true;
+  addLog('Barrier released — entropy increasing!', 'warn');
+}
+
+function entropyReset() {
+  released = false;
+  createParticles();
+  addLog('Entropy system reset.', 'ok');
+}
+
+function updateTemp() {
+  const v = document.getElementById('temp-slider').value;
+  eTemp = parseInt(v);
+  const temps = [100, 200, 298, 400, 600];
+  document.getElementById('temp-label').textContent = temps[eTemp - 1] + 'K';
+  document.getElementById('entropy-temp').textContent = temps[eTemp - 1] + ' K';
+}
+
+function updateEntropyStats() {
+  if (!particles.length) return;
+  const w = eCanvas.width;
+  const leftCount  = particles.filter(p => p.x < w / 2).length;
+  const rightCount = particles.length - leftCount;
+  const order = released
+    ? Math.round((1 - Math.abs(leftCount - rightCount) / particles.length) * 100) * (leftCount > rightCount * 1.5 || rightCount > leftCount * 1.5 ? 1 : 0.5 + 0.5 * Math.abs(leftCount - rightCount) / particles.length)
+    : 100;
+  const realOrder = particles.filter(p => (p.hot && p.x < w / 2) || (!p.hot && p.x >= w / 2)).length / particles.length * 100;
+  const entropy = (100 - realOrder).toFixed(2);
+  document.getElementById('entropy-order').textContent = Math.round(realOrder) + '%';
+  document.getElementById('entropy-val').textContent   = entropy;
+}
+
+function drawEntropy() {
+  const W = eCanvas.width, H = eCanvas.height;
+  eCtx.clearRect(0, 0, W, H);
+  eCtx.fillStyle = '#0f1f3d';
+  eCtx.fillRect(0, 0, W, H);
+
+  // Partition
+  if (!released) {
+    eCtx.strokeStyle = '#f8d76b';
+    eCtx.lineWidth = 3;
+    eCtx.setLineDash([6, 4]);
+    eCtx.beginPath(); eCtx.moveTo(W / 2, 0); eCtx.lineTo(W / 2, H); eCtx.stroke();
+    eCtx.setLineDash([]);
+    eCtx.fillStyle = '#f8d76b';
+    eCtx.font = '10px DM Mono, monospace';
+    eCtx.fillText('BARRIER', W/2 - 25, 14);
+  }
+
+  // Labels
+  eCtx.font = '11px Syne, sans-serif';
+  eCtx.fillStyle = 'rgba(224,123,0,.4)';
+  eCtx.fillText('HOT', 16, 18);
+  eCtx.fillStyle = 'rgba(13,115,119,.4)';
+  eCtx.fillText('COLD', W - 50, 18);
+
+  const speed = eTemp * 0.6;
+
+  particles.forEach(p => {
+    if (released) {
+      p.x += p.vx * speed;
+      p.y += p.vy * speed;
+      if (p.x < p.r || p.x > W - p.r) p.vx *= -1;
+      if (p.y < p.r || p.y > H - p.r) p.vy *= -1;
+    } else {
+      const bound = p.hot ? W / 2 - p.r : W / 2 + p.r;
+      p.x += p.vx * speed;
+      p.y += p.vy * speed;
+      if (p.hot && p.x > bound) { p.x = bound; p.vx *= -1; }
+      if (!p.hot && p.x < bound) { p.x = bound; p.vx *= -1; }
+      if (p.x < p.r) { p.x = p.r; p.vx *= -1; }
+      if (p.x > W - p.r) { p.x = W - p.r; p.vx *= -1; }
+      if (p.y < p.r || p.y > H - p.r) p.vy *= -1;
+    }
+    eCtx.beginPath();
+    eCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    eCtx.fillStyle = p.c;
+    eCtx.globalAlpha = .85;
+    eCtx.fill();
+    eCtx.globalAlpha = 1;
+  });
+
+  updateEntropyStats();
+  eAnimId = requestAnimationFrame(drawEntropy);
+}
+
+createParticles();
+drawEntropy();
+
+// ── CPU SIMULATION ──
+let simPower = false, simPaste = false, simFan = false;
+let simTemp = 30, simTime = 0;
+let simInterval2;
+
+function simTogglePower() {
+  simPower = !simPower;
+  const btn = document.getElementById('btn-power');
+  btn.textContent = simPower ? '⚡ Turn OFF CPU' : '⚡ Turn ON CPU';
+  btn.classList.toggle('on', simPower);
+  addLog(simPower ? 'CPU powered ON.' : 'CPU powered OFF — cooling down.', simPower ? 'warn' : 'ok');
+  if (simPower) startSim();
+}
+
+function simTogglePaste() {
+  simPaste = !simPaste;
+  const btn = document.getElementById('btn-paste');
+  btn.textContent = simPaste ? '💧 Remove Thermal Paste' : '💧 Apply Thermal Paste';
+  btn.classList.toggle('on', simPaste);
+  document.getElementById('svg-paste').setAttribute('fill', simPaste ? '#94a3b8' : '#e2e8f0');
+  document.getElementById('paste-lbl').textContent = simPaste ? 'THERMAL PASTE' : 'AIR GAP';
+  document.getElementById('paste-lbl').setAttribute('fill', simPaste ? '#fff' : '#94a3b8');
+  document.getElementById('tr-paste').textContent = simPaste ? 'TIM ≈ 0.1 °C/W' : 'Air Gap ≈ 30 °C/W';
+  document.getElementById('tr-paste').style.background = simPaste ? 'var(--green-l)' : '';
+  document.getElementById('tr-paste').style.color = simPaste ? 'var(--green)' : '';
+  addLog(simPaste ? 'Thermal paste applied — conductivity improved.' : 'Thermal paste removed — air gap restored.', simPaste ? 'ok' : 'warn');
+}
+
+function simToggleFan() {
+  simFan = !simFan;
+  const btn = document.getElementById('btn-fan');
+  btn.textContent = simFan ? '🌀 Disable Fan' : '🌀 Enable Fan Cooling';
+  btn.classList.toggle('on', simFan);
+  const blades = document.getElementById('fan-blades');
+  blades.style.animation = simFan ? 'fan-spin .5s linear infinite' : 'none';
+  document.getElementById('tr-fan').textContent = simFan ? 'Active Fan' : 'Still Air';
+  document.getElementById('tr-fan').style.background = simFan ? 'var(--teal-l)' : '';
+  document.getElementById('tr-fan').style.color = simFan ? 'var(--teal)' : '';
+  addLog(simFan ? 'Fan enabled — forced convection active.' : 'Fan disabled.', simFan ? 'ok' : '');
+}
+
+function startSim() {
+  if (simInterval2) clearInterval(simInterval2);
+  simInterval2 = setInterval(simTick, 400);
+}
+
+function simTick() {
+  simTime++;
+  if (simPower) {
+    const gen  = 5;
+    const diss = simPaste ? (simFan ? 4.8 : 3.2) : (simFan ? 1.2 : 0.4);
+    simTemp += gen - diss;
+    if (simTemp > 115) simTemp = 115;
+  } else {
+    simTemp -= simFan ? 3 : 1.8;
+    if (simTemp < 30) { simTemp = 30; clearInterval(simInterval2); }
+  }
+  updateSimUI();
+}
+
+let logCount = 0;
+function addLog(msg, type = '') {
+  const panel = document.getElementById('sim-log');
+  const d = document.createElement('div');
+  d.className = 'log-entry' + (type ? ' log-' + type : '');
+  const mm = String(Math.floor(logCount / 60)).padStart(2,'0');
+  const ss = String(logCount % 60).padStart(2,'0');
+  d.innerHTML = `<span class="log-time">[${mm}:${ss}]</span>${msg}`;
+  panel.appendChild(d);
+  panel.scrollTop = panel.scrollHeight;
+  logCount++;
+}
+
+function updateSimUI() {
+  const t = Math.round(simTemp);
+  const hsT = Math.max(28, Math.round(simPaste ? simTemp - 18 : simTemp - 2));
+  document.getElementById('cpu-temp-val').textContent = t + '°C';
+  document.getElementById('hs-temp-val').textContent  = hsT + '°C';
+
+  // Colour coding
+  const col = t < 50 ? '#4ade80' : t < 80 ? '#fbbf24' : t < 100 ? '#f97316' : '#ef4444';
+  document.getElementById('cpu-temp-val').style.color = col;
+
+  const throttle = t >= 95 ? 'THROTTLE' : t >= 80 ? 'HOT' : t >= 50 ? 'WARM' : 'OK';
+  const tv = document.getElementById('throttle-val');
+  tv.textContent = throttle;
+  tv.style.color = t >= 95 ? '#ef4444' : t >= 80 ? '#f97316' : t >= 50 ? '#fbbf24' : '#4ade80';
+
+  // SVG CPU color
+  const r = Math.min(255, 51 + ((t-30)/85) * 200);
+  const g = Math.max(30, 83 - ((t-30)/85) * 53);
+  document.getElementById('svg-cpu').setAttribute('fill', `rgb(${r},${g},50)`);
+  document.getElementById('svg-cpu-label').textContent = t >= 95 ? 'THROTTLING' : simPower ? 'ACTIVE' : 'IDLE';
+
+  // Heat waves
+  document.getElementById('heat-waves').style.opacity = (!simPaste && simTemp > 85) ? '1' : '0';
+
+  // Temp bar
+  const pct = Math.min(((simTemp - 30) / 85) * 100, 100);
+  const barH = (pct / 100) * 148;
+  const bar = document.getElementById('temp-bar-svg');
+  bar.setAttribute('y', 130 + 148 - barH);
+  bar.setAttribute('height', barH || 2);
+  bar.setAttribute('fill', col);
+
+  // Status
+  const st = document.getElementById('sim-status');
+  if (!simPower && simTemp <= 30) {
+    st.className = 'status-box status-idle';
+    st.textContent = 'System idle — CPU at ambient temperature (30 °C).';
+  } else if (simPower && !simPaste && simTemp > 95) {
+    st.className = 'status-box status-crit';
+    st.innerHTML = '⚠️ <strong>CRITICAL:</strong> CPU overheating without thermal paste! Apply paste immediately.';
+    if (simTemp > 100 && Math.random() < .1) addLog('CRITICAL: CPU temperature ' + t + '°C — risk of damage!', 'crit');
+  } else if (simPower && simPaste && simFan) {
+    st.className = 'status-box status-ok';
+    st.innerHTML = '✅ <strong>Optimal:</strong> Thermal paste + active fan — maximum heat dissipation.';
+  } else if (simPower) {
+    st.className = 'status-box status-warn';
+    st.innerHTML = `🌡️ CPU running at <strong>${t}°C</strong>. ${!simPaste ? 'Apply thermal paste for better cooling.' : 'Consider enabling the fan.'}`;
+  }
+}
+
+// ── FORMULA CALCULATOR ──
+const calcDefs = {
+  first:   { label:'First Law: ΔU = Q − W', fields:[{id:'Q',label:'Heat added Q (J)'},{id:'W',label:'Work done W (J)'}], calc: f => `ΔU = ${f.Q} − ${f.W} = ${(parseFloat(f.Q)-parseFloat(f.W)).toFixed(3)} J` },
+  carnot:  { label:'Carnot Efficiency', fields:[{id:'TH',label:'Hot temperature T_H (K)'},{id:'TC',label:'Cold temperature T_C (K)'}], calc: f => `η = 1 − ${f.TC}/${f.TH} = ${((1 - f.TC/f.TH)*100).toFixed(2)}%` },
+  heat:    { label:'Heat Transfer Q = mcΔT', fields:[{id:'m',label:'Mass m (kg)'},{id:'c',label:'Specific heat c (J/kg·K)'},{id:'dt',label:'Temperature change ΔT (K)'}], calc: f => `Q = ${f.m} × ${f.c} × ${f.dt} = ${(f.m*f.c*f.dt).toFixed(3)} J` },
+  entropy: { label:'Entropy Change ΔS = Q_rev / T', fields:[{id:'Qrev',label:'Reversible heat Q_rev (J)'},{id:'T',label:'Temperature T (K)'}], calc: f => `ΔS = ${f.Qrev}/${f.T} = ${(f.Qrev/f.T).toFixed(4)} J/K` },
+  ideal:   { label:'Ideal Gas PV = nRT', fields:[{id:'n',label:'Moles n (mol)'},{id:'R',label:'Gas constant R (J/mol·K)',val:'8.314'},{id:'T',label:'Temperature T (K)'},{id:'V',label:'Volume V (m³)'}], calc: f => `P = nRT/V = (${f.n}×8.314×${f.T})/${f.V} = ${(f.n*8.314*f.T/f.V).toFixed(3)} Pa` },
+  work:    { label:'Work W = PΔV', fields:[{id:'P',label:'Pressure P (Pa)'},{id:'dV',label:'Volume change ΔV (m³)'}], calc: f => `W = ${f.P} × ${f.dV} = ${(f.P*f.dV).toFixed(4)} J` }
+};
+
+function renderCalcFields() {
+  const key = document.getElementById('calc-formula').value;
+  const wrap = document.getElementById('calc-fields');
+  document.getElementById('calc-result').textContent = 'Result appears here';
+  if (!key) { wrap.innerHTML = ''; return; }
+  const def = calcDefs[key];
+  wrap.innerHTML = def.fields.map(f =>
+    `<div class="calc-field"><label>${f.label}</label><input id="ci-${f.id}" type="number" value="${f.val||''}" placeholder="Enter value"/></div>`
+  ).join('');
+}
+
+function runCalc() {
+  const key = document.getElementById('calc-formula').value;
+  if (!key) { document.getElementById('calc-result').textContent = 'Please select a formula first.'; return; }
+  const def = calcDefs[key];
+  const vals = {};
+  let ok = true;
+  def.fields.forEach(f => {
+    const v = parseFloat(document.getElementById('ci-' + f.id).value);
+    if (isNaN(v)) { ok = false; } else { vals[f.id] = v; }
+  });
+  if (!ok) { document.getElementById('calc-result').textContent = 'Please fill all fields.'; return; }
+  try {
+    document.getElementById('calc-result').textContent = def.calc(vals);
+  } catch(e) {
+    document.getElementById('calc-result').textContent = 'Calculation error: ' + e.message;
+  }
+}
+
+// ── QUIZ ──
+const QUIZ = [
+  { q:"Which law of thermodynamics defines temperature as a property of matter?", opts:["First Law","Second Law","Zeroth Law","Third Law"], ans:2, exp:"The Zeroth Law establishes that thermal equilibrium is transitive, which gives us the concept of temperature as a measurable, comparable property." },
+  { q:"A system absorbs 500 J of heat and does 200 J of work on its surroundings. What is the change in internal energy?", opts:["700 J","300 J","−300 J","−700 J"], ans:1, exp:"First Law: ΔU = Q − W = 500 − 200 = 300 J. The system gains internal energy." },
+  { q:"What happens to entropy in a truly isolated, irreversible process?", opts:["Decreases","Stays the same","Increases","Oscillates"], ans:2, exp:"The Second Law states that entropy of an isolated system always increases (or stays constant for reversible processes). This is the law of entropy increase." },
+  { q:"What is the theoretical maximum efficiency of a Carnot engine operating between 600 K and 300 K?", opts:["25%","50%","75%","100%"], ans:1, exp:"η = 1 − T_C/T_H = 1 − 300/600 = 0.5 = 50%. The Carnot efficiency depends only on the reservoir temperatures." },
+  { q:"In an adiabatic process, which quantity remains constant?", opts:["Temperature","Pressure","Heat exchange (Q = 0)","Volume"], ans:2, exp:"'Adiabatic' means no heat is exchanged with the surroundings — Q = 0. Work changes the internal energy and thus the temperature." },
+  { q:"Thermal paste between a CPU and heatsink primarily improves heat transfer by:", opts:["Insulating the CPU from electrical leakage","Eliminating air gaps that would act as insulators","Lowering the CPU's power consumption","Increasing the surface area of the heatsink"], ans:1, exp:"Air is a poor thermal conductor. Thermal paste fills microscopic surface gaps, replacing insulating air pockets with a high-conductivity material." },
+  { q:"The Third Law of Thermodynamics implies that absolute zero (0 K) is:", opts:["Reachable in a finite number of steps","The temperature of outer space","Unattainable — approached asymptotically","The boiling point of helium"], ans:2, exp:"The Third Law states that it takes an infinite number of thermodynamic operations to reach absolute zero. It is a fundamental limit, not just a practical challenge." },
+  { q:"In a P–V diagram, the area under the curve for a process represents:", opts:["Internal energy change (ΔU)","Heat added (Q)","Work done (W) by the gas","Entropy change (ΔS)"], ans:2, exp:"The work done by a gas during expansion/compression is defined as W = ∫P dV, which geometrically equals the area under the P–V curve." },
+  { q:"A refrigerator moving heat from cold food to the warm room is an example of which law in action?", opts:["Zeroth Law — thermal equilibrium","First Law — energy conservation (using electrical work)","Third Law — approaching absolute zero","None — refrigerators violate thermodynamics"], ans:1, exp:"A refrigerator obeys both the First Law (electrical energy drives the process) and Second Law (it uses external work to move heat 'uphill', from cold to hot)." },
+  { q:"For a perfect crystal at absolute zero, the entropy is:", opts:["Infinite","One (unity)","Zero","Negative"], ans:2, exp:"This is the statement of the Third Law: a perfect crystal at T = 0 K has exactly zero entropy — there is only one possible microstate (perfect order)." }
+];
+
+let quizIdx = 0, quizScore = 0, quizAnswered = false;
+
+function quizBuild() {
+  // Progress dots
+  const prog = document.getElementById('quiz-progress');
+  prog.innerHTML = QUIZ.map((_, i) => `<div class="quiz-dot${i < quizIdx ? ' done' : i === quizIdx ? ' current' : ''}"></div>`).join('');
+  // Question
+  const q = QUIZ[quizIdx];
+  document.getElementById('quiz-q-text').textContent = `Q${quizIdx+1}. ${q.q}`;
+  document.getElementById('quiz-opts').innerHTML = q.opts.map((o, i) =>
+    `<button class="quiz-opt" onclick="quizAnswer(${i})">${o}</button>`
+  ).join('');
+  document.getElementById('quiz-feedback').className = 'quiz-feedback';
+  document.getElementById('quiz-feedback').innerHTML = '';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  quizAnswered = false;
+}
+
+function quizAnswer(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = QUIZ[quizIdx];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(b => b.disabled = true);
+  opts[q.ans].classList.add('correct');
+  const fb = document.getElementById('quiz-feedback');
+  if (idx === q.ans) {
+    quizScore++;
+    opts[idx].classList.add('correct');
+    fb.className = 'quiz-feedback show ok';
+    fb.innerHTML = '✅ <strong>Correct!</strong> ' + q.exp;
+  } else {
+    opts[idx].classList.add('wrong');
+    fb.className = 'quiz-feedback show err';
+    fb.innerHTML = '❌ <strong>Incorrect.</strong> ' + q.exp;
+  }
+  document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+}
+
+function quizNext() {
+  quizIdx++;
+  if (quizIdx >= QUIZ.length) {
+    document.getElementById('quiz-question-wrap').style.display = 'none';
+    const scoreEl = document.getElementById('quiz-score');
+    scoreEl.classList.add('show');
+    document.getElementById('score-num').textContent = quizScore + '/' + QUIZ.length;
+    const pct = quizScore / QUIZ.length;
+    document.getElementById('score-label').textContent = pct === 1 ? '🏆 Perfect Score!' : pct >= .8 ? '🎉 Excellent Work' : pct >= .6 ? '👍 Good Job' : '📚 Keep Studying';
+    document.getElementById('score-msg').textContent = pct === 1 ? 'Outstanding! You have mastered thermodynamics.'
+      : pct >= .8 ? 'Great understanding of thermodynamics. Review any missed topics.'
+      : pct >= .6 ? 'Solid foundation. Re-read the laws and try the simulator.'
+      : 'Thermodynamics takes time. Re-read each module carefully and try again.';
+  } else {
+    quizBuild();
+  }
+}
+
+function quizRestart() {
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quiz-question-wrap').style.display = 'block';
+  document.getElementById('quiz-score').classList.remove('show');
+  quizBuild();
+}
+
+quizBuild();
+
+// ── GLOSSARY ──
+const GLOSSARY = [
+  { term:'Entropy', sym:'S (J/K)', def:'A measure of the disorder or randomness of a system. A fundamental state function that always increases in isolated systems.' },
+  { term:'Internal Energy', sym:'U (J)', def:'The total energy stored within a system, including kinetic and potential energies of all its molecules.' },
+  { term:'Enthalpy', sym:'H = U + PV', def:'A thermodynamic quantity equal to the system\'s internal energy plus the product of pressure and volume. Useful for constant-pressure processes.' },
+  { term:'Thermal Equilibrium', sym:'T_A = T_B', def:'A condition where two systems in thermal contact have the same temperature and no net heat flows between them.' },
+  { term:'Adiabatic', sym:'Q = 0', def:'A process in which no heat is exchanged between the system and its surroundings.' },
+  { term:'Isothermal', sym:'T = const', def:'A thermodynamic process that occurs at constant temperature. The system must exchange heat with its environment.' },
+  { term:'Isobaric', sym:'P = const', def:'A thermodynamic process that occurs at constant pressure. Common in everyday chemistry (reactions at atmospheric pressure).' },
+  { term:'Isochoric', sym:'V = const', def:'A thermodynamic process that occurs at constant volume. No P-V work is done (W = 0), so all heat changes internal energy.' },
+  { term:'Carnot Efficiency', sym:'η = 1 − T_C/T_H', def:'The maximum possible efficiency of a heat engine operating between a hot reservoir at T_H and a cold reservoir at T_C.' },
+  { term:'Heat Capacity', sym:'C (J/K)', def:'The amount of heat required to raise the temperature of a substance by one degree. Depends on whether pressure or volume is held constant.' },
+  { term:'Specific Heat', sym:'c (J/kg·K)', def:'Heat capacity per unit mass. Water has an unusually high specific heat of 4186 J/(kg·K), making it an effective thermal buffer.' },
+  { term:'Absolute Zero', sym:'0 K = −273.15 °C', def:'The theoretical temperature at which a system has minimum thermal energy. Particles approach, but never fully reach, a state of zero motion.' },
+  { term:'Thermal Conductivity', sym:'k (W/m·K)', def:'A material\'s ability to conduct heat. Copper (385 W/m·K) is excellent; air (~0.025 W/m·K) is a poor conductor — hence why gaps matter in CPUs.' },
+  { term:'Clausius Inequality', sym:'∮ dQ/T ≤ 0', def:'A mathematical expression of the Second Law: the cyclic integral of heat divided by temperature is less than or equal to zero for any real process.' },
+  { term:'Free Energy', sym:'G = H − TS', def:'Gibbs Free Energy combines enthalpy and entropy to predict spontaneity. A process is spontaneous when ΔG < 0.' },
+  { term:'Reversible Process', sym:'ΔS_universe = 0', def:'An idealised process that can be reversed without any net change in entropy. Real processes are always irreversible (ΔS > 0).' },
+  { term:'Work', sym:'W = ∫P dV', def:'Energy transfer due to a force acting over a displacement. In thermodynamics, it is often mechanical P-V work by an expanding gas.' },
+  { term:'Heat', sym:'Q (J)', def:'Energy transfer due to a temperature difference. Not a state function — it depends on the path taken, not just the start and end states.' },
+  { term:'Boltzmann Equation', sym:'S = k_B ln(Ω)', def:'Connects entropy to the number of possible microstates Ω. More microstates = higher entropy = more disorder.' },
+  { term:'Ideal Gas', sym:'PV = nRT', def:'A model gas whose molecules have no volume and no intermolecular forces. Real gases approximate this at low pressures and high temperatures.' },
+];
+
+function renderGlossary(filter = '') {
+  const grid = document.getElementById('glossary-grid');
+  const fl = filter.toLowerCase();
+  const items = GLOSSARY.filter(g =>
+    g.term.toLowerCase().includes(fl) ||
+    g.sym.toLowerCase().includes(fl)  ||
+    g.def.toLowerCase().includes(fl)
+  );
+  grid.innerHTML = items.map(g => `
+    <div class="glossary-card">
+      <div class="glossary-term">${g.term}</div>
+      <div class="glossary-symbol">${g.sym}</div>
+      <div class="glossary-def">${g.def}</div>
+    </div>
+  `).join('');
+}
+
+function filterGlossary(v) { renderGlossary(v); }
+renderGlossary();
+</script>
 </body>
 </html>

@@ -44,7 +44,7 @@ Installation & Execution
 
 Clone this repository:
 
-git clone [https://github.com/yourusername/thermomaster.git](https://github.com/yourusername/thermomaster.git)
+git clone [https://github.com/AnggaConni/thermomaster.git](https://github.com/AnggaConni/thermomaster.git)
 
 
 Navigate to the project directory:

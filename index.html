@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering Thermodynamics: A Comprehensive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memperbarui CDN Lucide ke unpkg yang lebih stabil -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .law-card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .formula-box {
+            background: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Transisi untuk animasi simulasi SVG */
+        .sim-element {
+            transition: fill 0.5s ease, opacity 0.3s ease;
+        }
+        
+        /* Animasi gelombang panas */
+        @keyframes radiate {
+            0% { opacity: 0.8; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
+        }
+        .heat-wave {
+            animation: radiate 2s infinite linear;
+            transform-origin: center;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="flame" class="text-orange-500"></i>
+                <span class="font-bold text-xl tracking-tight">ThermoMaster</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium">
+                <a href="#intro" class="hover:text-blue-600 transition">Introduction</a>
+                <a href="#laws" class="hover:text-blue-600 transition">The 4 Laws</a>
+                <a href="#cpu" class="hover:text-blue-600 transition">CPU Application</a>
+                <a href="#simulation" class="hover:text-blue-600 transition text-blue-600 font-bold">Live Simulation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="intro" class="pt-32 pb-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                Understanding Thermodynamics
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed mb-8">
+                Thermodynamics is the branch of physics that deals with heat, work, and temperature, and their relation to energy, radiation, and physical properties of matter.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#laws" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition">Start Learning</a>
+                <a href="#simulation" class="bg-white border border-slate-200 px-6 py-3 rounded-full font-semibold hover:border-blue-400 transition">Try Simulation</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        
+        <!-- The Four Laws with SVG Visualizations -->
+        <section id="laws" class="mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">The Fundamental Laws</h2>
+                <div class="h-1 w-20 bg-blue-600 mx-auto rounded"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Zeroth Law -->
+                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-blue-100 text-blue-600 rounded-lg">
+                            <i data-lucide="thermometer"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Zeroth Law</h3>
+                    </div>
+                    <!-- Visualisasi SVG Hukum Ke-0 -->
+                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
+                        <svg width="240" height="100" viewBox="0 0 240 100">
+                            <!-- Garis Kesetimbangan -->
+                            <path d="M 60 50 L 120 50 L 180 50" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" fill="none" />
+                            <path d="M 60 50 L 60 80 L 180 80 L 180 50" stroke="#3b82f6" stroke-width="2" fill="none" />
+                            <!-- Objek A, C, B -->
+                            <rect x="40" y="30" width="40" height="40" rx="4" fill="#ef4444" />
+                            <text x="60" y="55" fill="white" font-weight="bold" text-anchor="middle">A</text>
+                            
+                            <rect x="100" y="30" width="40" height="40" rx="4" fill="#22c55e" />
+                            <text x="120" y="55" fill="white" font-weight="bold" text-anchor="middle">C</text>
+                            
+                            <rect x="160" y="30" width="40" height="40" rx="4" fill="#ef4444" />
+                            <text x="180" y="55" fill="white" font-weight="bold" text-anchor="middle">B</text>
+                            <!-- Simbol Sama Dengan -->
+                            <text x="80" y="45" fill="#64748b" font-weight="bold" text-anchor="middle">=</text>
+                            <text x="140" y="45" fill="#64748b" font-weight="bold" text-anchor="middle">=</text>
+                            <text x="120" y="95" fill="#3b82f6" font-size="12" font-weight="bold" text-anchor="middle">A = B</text>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 mb-6 italic">"The Law of Thermal Equilibrium"</p>
+                    <p class="text-slate-600 mb-4 flex-grow">
+                        If two systems are each in thermal equilibrium with a third system, they are in thermal equilibrium with each other. This allows us to define temperature.
+                    </p>
+                    <div class="formula-box">
+                        If $A = C$ and $B = C$, then $A = B$
+                    </div>
+                </div>
+
+                <!-- First Law -->
+                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-red-100 text-red-600 rounded-lg">
+                            <i data-lucide="battery-charging"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">First Law</h3>
+                    </div>
+                    <!-- Visualisasi SVG Hukum Ke-1 -->
+                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
+                        <svg width="240" height="100" viewBox="0 0 240 100">
+                            <rect x="80" y="20" width="80" height="60" rx="8" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+                            <text x="120" y="55" fill="#334155" font-weight="bold" text-anchor="middle">System (ΔU)</text>
+                            <!-- Panah Masuk (Heat) -->
+                            <path d="M 20 50 L 70 50" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow-red)"/>
+                            <polygon points="70,45 80,50 70,55" fill="#ef4444"/>
+                            <text x="45" y="40" fill="#ef4444" font-weight="bold" text-anchor="middle">+ Heat (Q)</text>
+                            <!-- Panah Keluar (Work) -->
+                            <path d="M 160 50 L 210 50" stroke="#3b82f6" stroke-width="4"/>
+                            <polygon points="210,45 220,50 210,55" fill="#3b82f6"/>
+                            <text x="190" y="40" fill="#3b82f6" font-weight="bold" text-anchor="middle">Work (W)</text>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 mb-6 italic">"The Law of Conservation of Energy"</p>
+                    <p class="text-slate-600 mb-4 flex-grow">
+                        Energy can be converted from one form to another with the interaction of heat, work and internal energy, but it cannot be created or destroyed.
+                    </p>
+                    <div class="formula-box">
+                        $\Delta U = Q - W$
+                    </div>
+                </div>
+
+                <!-- Second Law -->
+                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-purple-100 text-purple-600 rounded-lg">
+                            <i data-lucide="wind"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Second Law</h3>
+                    </div>
+                    <!-- Visualisasi SVG Hukum Ke-2 -->
+                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
+                        <svg width="240" height="100" viewBox="0 0 240 100">
+                            <rect x="30" y="20" width="60" height="60" rx="4" fill="#ef4444" />
+                            <text x="60" y="55" fill="white" font-weight="bold" text-anchor="middle">HOT</text>
+                            
+                            <rect x="150" y="20" width="60" height="60" rx="4" fill="#3b82f6" />
+                            <text x="180" y="55" fill="white" font-weight="bold" text-anchor="middle">COLD</text>
+                            
+                            <!-- Panah Aliran Panas -->
+                            <path d="M 100 50 L 140 50" stroke="#f97316" stroke-width="6" stroke-dasharray="4,2"/>
+                            <polygon points="140,40 150,50 140,60" fill="#f97316"/>
+                            <text x="125" y="35" fill="#f97316" font-size="12" font-weight="bold" text-anchor="middle">Natural Flow</text>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 mb-6 italic">"The Law of Entropy"</p>
+                    <p class="text-slate-600 mb-4 flex-grow">
+                        The total entropy of an isolated system can never decrease over time. Heat naturally flows from hot objects to cold objects, not the other way around.
+                    </p>
+                    <div class="formula-box">
+                        $\Delta S_{total} \geq 0$
+                    </div>
+                </div>
+
+                <!-- Third Law -->
+                <div class="law-card bg-white p-8 rounded-2xl shadow-sm flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-cyan-100 text-cyan-600 rounded-lg">
+                            <i data-lucide="snowflake"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Third Law</h3>
+                    </div>
+                    <!-- Visualisasi SVG Hukum Ke-3 -->
+                    <div class="w-full bg-slate-50 rounded-xl mb-4 p-4 flex justify-center items-center">
+                        <svg width="240" height="100" viewBox="0 0 240 100">
+                            <!-- Termometer -->
+                            <rect x="40" y="20" width="160" height="20" rx="10" fill="#e2e8f0" />
+                            <rect x="40" y="20" width="20" height="20" rx="10" fill="#06b6d4" />
+                            
+                            <!-- Partikel membeku -->
+                            <circle cx="100" cy="70" r="4" fill="#06b6d4" />
+                            <circle cx="120" cy="65" r="4" fill="#06b6d4" />
+                            <circle cx="140" cy="75" r="4" fill="#06b6d4" />
+                            <text x="120" y="95" fill="#64748b" font-size="12" text-anchor="middle">Particles stop moving (Zero Entropy)</text>
+                            
+                            <text x="25" y="35" fill="#06b6d4" font-weight="bold" text-anchor="middle">0 K</text>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 mb-6 italic">"The Law of Absolute Zero"</p>
+                    <p class="text-slate-600 mb-4 flex-grow">
+                        As temperature approaches absolute zero ($0$ Kelvin), the entropy of a system approaches a constant minimum value. Perfect order is achieved.
+                    </p>
+                    <div class="formula-box">
+                        $S \to 0$ as $T \to 0$ K
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practical Application: CPU Thermal Paste -->
+        <section id="cpu" class="bg-slate-900 text-white rounded-3xl p-8 md:p-16 mb-12 overflow-hidden relative">
+            <div class="relative z-10">
+                <div class="flex items-center gap-4 mb-8">
+                    <i data-lucide="cpu" class="w-12 h-12 text-blue-400"></i>
+                    <h2 class="text-4xl font-bold">Practical Case: CPU Cooling</h2>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-blue-300">Why it matters?</h3>
+                        <p class="text-slate-300 mb-6 leading-relaxed">
+                            Your CPU generates intense heat through electrical resistance (First Law: electrical energy becomes thermal energy). To prevent damage, we must move this heat to a heatsink (Second Law: heat flows from the hot CPU to the cooler heatsink). 
+                        </p>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <h4 class="font-bold mb-2 flex items-center gap-2">
+                                <i data-lucide="info" class="w-4 h-4 text-yellow-400"></i>
+                                Thermodynamic Concept
+                            </h4>
+                            <p class="text-sm text-slate-400 italic">
+                                Microscopically, the surfaces of a CPU and Heatsink are uneven. Air gaps act as insulators. Thermal paste (TIM) acts as a high-conductivity bridge, maximizing thermal contact.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white text-slate-900 p-8 rounded-2xl shadow-xl">
+                        <h3 class="text-2xl font-bold mb-6">Thermal Paste Guide</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="step-number">1</div>
+                                <div>
+                                    <h4 class="font-bold">Cleaning</h4>
+                                    <p class="text-sm text-slate-600">Remove old paste using Isopropyl Alcohol (90%+) and a lint-free cloth.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="step-number">2</div>
+                                <div>
+                                    <h4 class="font-bold">Application</h4>
+                                    <p class="text-sm text-slate-600">Apply a "pea-sized" amount of high-quality paste in the center of the CPU IHS.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="step-number">3</div>
+                                <div>
+                                    <h4 class="font-bold">Pressure</h4>
+                                    <p class="text-sm text-slate-600">Mount the cooler. The pressure spreads the paste evenly, eliminating air pockets (entropy reduction in the contact layer).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Abstract Background Element -->
+            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-600 rounded-full opacity-10 blur-3xl"></div>
+        </section>
+
+        <!-- Interactive Simulation Section -->
+        <section id="simulation" class="mb-24">
+            <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
+                <div class="bg-blue-600 text-white p-6 flex items-center gap-3">
+                    <i data-lucide="activity"></i>
+                    <h2 class="text-2xl font-bold">Interactive Thermal Simulation</h2>
+                </div>
+                
+                <div class="p-8 grid md:grid-cols-2 gap-12 items-center">
+                    <!-- Area SVG Animasi -->
+                    <div class="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <svg width="300" height="350" viewBox="0 0 300 350" id="sim-svg">
+                            <!-- Kipas/Heatsink Atas -->
+                            <g id="heatsink-group">
+                                <rect x="50" y="50" width="200" height="120" fill="#cbd5e1" class="sim-element" id="svg-heatsink" rx="4"/>
+                                <!-- Sirip Heatsink -->
+                                <rect x="60" y="20" width="10" height="30" fill="#94a3b8" />
+                                <rect x="90" y="20" width="10" height="30" fill="#94a3b8" />
+                                <rect x="120" y="20" width="10" height="30" fill="#94a3b8" />
+                                <rect x="150" y="20" width="10" height="30" fill="#94a3b8" />
+                                <rect x="180" y="20" width="10" height="30" fill="#94a3b8" />
+                                <rect x="210" y="20" width="10" height="30" fill="#94a3b8" />
+                                <rect x="240" y="20" width="10" height="30" fill="#94a3b8" />
+                                <text x="150" y="115" fill="#475569" font-weight="bold" text-anchor="middle" font-size="14">HEATSINK</text>
+                            </g>
+
+                            <!-- Indikator Gelombang Panas (Akan muncul jika tanpa pasta) -->
+                            <g id="heat-waves-container" fill="none" stroke="#ef4444" stroke-width="3" opacity="0">
+                                <path d="M 80 160 Q 90 140 80 120" class="heat-wave" />
+                                <path d="M 150 160 Q 160 140 150 120" class="heat-wave" style="animation-delay: 0.5s"/>
+                                <path d="M 220 160 Q 230 140 220 120" class="heat-wave" style="animation-delay: 1s"/>
+                            </g>
+
+                            <!-- Gap / Thermal Paste Layer -->
+                            <rect x="80" y="170" width="140" height="15" fill="#e2e8f0" id="svg-paste-layer" class="sim-element" />
+                            <text x="150" y="182" fill="#64748b" font-size="10" text-anchor="middle" id="paste-label">AIR GAP (Isolator)</text>
+
+                            <!-- CPU -->
+                            <rect x="70" y="185" width="160" height="60" fill="#475569" class="sim-element" id="svg-cpu" rx="6" />
+                            <rect x="90" y="195" width="120" height="40" fill="#334155" rx="2" />
+                            <text x="150" y="220" fill="white" font-weight="bold" text-anchor="middle" font-size="18">CPU</text>
+                            
+                            <!-- Motherboard Base -->
+                            <rect x="20" y="245" width="260" height="20" fill="#166534" rx="4" />
+                            <text x="150" y="260" fill="#86efac" font-size="12" text-anchor="middle">MOTHERBOARD</text>
+                        </svg>
+                    </div>
+
+                    <!-- Panel Kontrol Simulasi -->
+                    <div class="flex flex-col gap-6">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Simulation Controls</h3>
+                            <p class="text-slate-600 text-sm mb-4">See how the Second Law of Thermodynamics applies. Heat flows efficiently only when there's a good conductive bridge.</p>
+                        </div>
+
+                        <!-- Monitor Suhu -->
+                        <div class="bg-slate-900 rounded-xl p-6 text-white shadow-inner flex items-center justify-between">
+                            <div>
+                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">CPU Temp</p>
+                                <div class="text-4xl font-mono font-bold flex items-center gap-2">
+                                    <span id="temp-display" class="text-green-400">30</span>
+                                    <span class="text-2xl text-slate-500">°C</span>
+                                </div>
+                            </div>
+                            <div class="h-16 w-4 bg-slate-700 rounded-full overflow-hidden relative">
+                                <div id="temp-bar" class="absolute bottom-0 w-full bg-green-400 transition-all duration-300" style="height: 30%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Tombol Interaksi -->
+                        <div class="space-y-4">
+                            <button id="btn-power" onclick="togglePower()" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 bg-slate-200 hover:bg-slate-300 text-slate-800 flex items-center justify-center gap-2">
+                                <i data-lucide="power"></i> <span id="power-text">Turn ON CPU</span>
+                            </button>
+                            
+                            <button id="btn-paste" onclick="togglePaste()" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-blue-500 text-blue-600 hover:bg-blue-50 flex items-center justify-center gap-2">
+                                <i data-lucide="droplets"></i> <span id="paste-btn-text">Apply Thermal Paste</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Peringatan / Status -->
+                        <div id="sim-status" class="text-sm font-medium text-slate-500 bg-slate-100 p-4 rounded-lg border border-slate-200">
+                            System Idle. CPU is at room temperature.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-slate-500 mb-4">© 2024 Educational Resource - The Science of Heat & Work</p>
+            <div class="flex justify-center gap-6 text-slate-400">
+                <i data-lucide="book-open" class="hover:text-blue-600 cursor-pointer"></i>
+                <i data-lucide="github" class="hover:text-blue-600 cursor-pointer"></i>
+                <i data-lucide="twitter" class="hover:text-blue-600 cursor-pointer"></i>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Inisialisasi ikon Lucide dengan pengecekan aman agar tidak terjadi error
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.warn('Lucide icons failed to load. Please check your internet connection.');
+            }
+        });
+
+        // Smooth scrolling untuk navigasi
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // --- Logika Simulasi Termal ---
+        
+        // Status Variabel
+        let isPowerOn = false;
+        let hasPaste = false;
+        let currentTemp = 30; // Suhu ruangan
+        let simInterval;
+
+        // Elemen DOM
+        const displayTemp = document.getElementById('temp-display');
+        const barTemp = document.getElementById('temp-bar');
+        const svgCpu = document.getElementById('svg-cpu');
+        const svgHeatsink = document.getElementById('svg-heatsink');
+        const svgPasteLayer = document.getElementById('svg-paste-layer');
+        const pasteLabel = document.getElementById('paste-label');
+        const btnPower = document.getElementById('btn-power');
+        const powerText = document.getElementById('power-text');
+        const btnPaste = document.getElementById('btn-paste');
+        const pasteBtnText = document.getElementById('paste-btn-text');
+        const statusText = document.getElementById('sim-status');
+        const heatWaves = document.getElementById('heat-waves-container');
+
+        // Fungsi mengaktifkan/mematikan CPU
+        function togglePower() {
+            isPowerOn = !isPowerOn;
+            if (isPowerOn) {
+                btnPower.classList.replace('bg-slate-200', 'bg-red-500');
+                btnPower.classList.replace('hover:bg-slate-300', 'hover:bg-red-600');
+                btnPower.classList.replace('text-slate-800', 'text-white');
+                powerText.innerText = "Turn OFF CPU";
+                startSimulation();
+            } else {
+                btnPower.classList.replace('bg-red-500', 'bg-slate-200');
+                btnPower.classList.replace('hover:bg-red-600', 'hover:bg-slate-300');
+                btnPower.classList.replace('text-white', 'text-slate-800');
+                powerText.innerText = "Turn ON CPU";
+            }
+            updateStatus();
+        }
+
+        // Fungsi menambah/menghapus Thermal Paste
+        function togglePaste() {
+            hasPaste = !hasPaste;
+            if (hasPaste) {
+                svgPasteLayer.setAttribute('fill', '#94a3b8'); // Warna pasta abu-abu pekat
+                pasteLabel.textContent = "THERMAL PASTE (Conductor)";
+                pasteLabel.setAttribute('fill', '#ffffff');
+                btnPaste.classList.replace('border-blue-500', 'bg-blue-500');
+                btnPaste.classList.replace('text-blue-600', 'text-white');
+                pasteBtnText.innerText = "Remove Thermal Paste";
+            } else {
+                svgPasteLayer.setAttribute('fill', '#e2e8f0'); // Warna udara/gap
+                pasteLabel.textContent = "AIR GAP (Isolator)";
+                pasteLabel.setAttribute('fill', '#64748b');
+                btnPaste.classList.replace('bg-blue-500', 'border-blue-500');
+                btnPaste.classList.replace('text-white', 'text-blue-600');
+                pasteBtnText.innerText = "Apply Thermal Paste";
+            }
+            updateStatus();
+        }
+
+        // Loop utama simulasi
+        function startSimulation() {
+            if (simInterval) clearInterval(simInterval);
+            
+            simInterval = setInterval(() => {
+                // Kalkulasi perpindahan panas berdasarkan Hukum Termodinamika Ke-1 & Ke-2
+                if (isPowerOn) {
+                    let heatGeneration = 4.0; // CPU menghasilkan panas
+                    let heatDissipation;
+
+                    // Jika ada pasta, panas berpindah efektif ke heatsink
+                    if (hasPaste) {
+                        heatDissipation = 3.5; 
+                    } else {
+                        // Jika udara saja (tanpa pasta), perpindahan panas sangat lambat
+                        heatDissipation = 0.5; 
+                    }
+                    
+                    currentTemp += (heatGeneration - heatDissipation);
+                    
+                    // Batas maksimal suhu
+                    if (currentTemp > 110) currentTemp = 110;
+                } else {
+                    // Pendinginan natural jika dimatikan
+                    currentTemp -= 2.0;
+                    if (currentTemp < 30) currentTemp = 30; // Suhu ambient
+                }
+
+                updateUI();
+
+                // Hentikan interval jika CPU mati dan sudah dingin
+                if (!isPowerOn && currentTemp <= 30) {
+                    clearInterval(simInterval);
+                }
+            }, 500); // Update setiap setengah detik
+        }
+
+        // Update Visual dan Angka
+        function updateUI() {
+            let tempRound = Math.round(currentTemp);
+            displayTemp.innerText = tempRound;
+            
+            // Update tinggi bar indikator suhu (max 110C)
+            let percent = Math.min((currentTemp / 110) * 100, 100);
+            barTemp.style.height = `${percent}%`;
+
+            // Ubah Warna Teks dan Bar berdasarkan Suhu
+            displayTemp.className = 'text-4xl font-mono font-bold flex items-center gap-2 transition-colors';
+            barTemp.className = 'absolute bottom-0 w-full transition-all duration-300';
+            
+            if (currentTemp < 50) {
+                displayTemp.classList.add('text-green-400');
+                barTemp.classList.add('bg-green-400');
+            } else if (currentTemp < 85) {
+                displayTemp.classList.add('text-yellow-400');
+                barTemp.classList.add('bg-yellow-400');
+            } else {
+                displayTemp.classList.add('text-red-500');
+                barTemp.classList.add('bg-red-500');
+            }
+
+            // Update warna SVG CPU
+            svgCpu.setAttribute('fill', getTempColor(currentTemp));
+
+            // Update warna SVG Heatsink (Heatsink menyerap panas jika ada pasta)
+            let hsTemp = hasPaste ? (currentTemp - 20) : 30;
+            if (hsTemp < 30) hsTemp = 30;
+            svgHeatsink.setAttribute('fill', getHeatsinkColor(hsTemp));
+
+            // Efek gelombang panas visual jika overheating (suhu > 90 dan tanpa pasta)
+            if (currentTemp > 90 && !hasPaste) {
+                heatWaves.setAttribute('opacity', '1');
+            } else {
+                heatWaves.setAttribute('opacity', '0');
+            }
+
+            updateStatus();
+        }
+
+        // Helper: Gradasi warna Suhu CPU
+        function getTempColor(temp) {
+            if (temp <= 30) return '#475569'; // Abu-abu slate (Dingin)
+            if (temp > 100) return '#b91c1c'; // Merah gelap (Throttling/Bahaya)
+            
+            // Kalkulasi warna dari kuning ke merah
+            let ratio = (temp - 30) / 70; 
+            let r = Math.min(255, 100 + (ratio * 155));
+            let g = Math.max(0, 150 - (ratio * 150));
+            let b = 50;
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // Helper: Gradasi warna Heatsink
+        function getHeatsinkColor(temp) {
+            if (temp <= 30) return '#cbd5e1'; 
+            let ratio = (temp - 30) / 60;
+            let r = Math.min(255, 203 + (ratio * 50));
+            let g = Math.max(100, 213 - (ratio * 50));
+            let b = Math.max(50, 225 - (ratio * 100));
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // Perbarui teks status simulasi
+        function updateStatus() {
+            if (!isPowerOn && currentTemp <= 30) {
+                statusText.innerHTML = "System Idle. CPU is at room temperature.";
+                statusText.className = "text-sm font-medium text-slate-500 bg-slate-100 p-4 rounded-lg border border-slate-200";
+            } else if (isPowerOn && !hasPaste) {
+                if (currentTemp > 90) {
+                    statusText.innerHTML = "⚠️ <b>WARNING: Thermal Throttling!</b> Air gap prevents heat transfer. CPU is overheating.";
+                    statusText.className = "text-sm font-medium text-red-700 bg-red-100 p-4 rounded-lg border border-red-200 animate-pulse";
+                } else {
+                    statusText.innerHTML = "CPU running without thermal paste. Heat is building up rapidly in the CPU.";
+                    statusText.className = "text-sm font-medium text-yellow-700 bg-yellow-100 p-4 rounded-lg border border-yellow-200";
+                }
+            } else if (isPowerOn && hasPaste) {
+                statusText.innerHTML = "✅ <b>Optimal Cooling.</b> Thermal paste is efficiently transferring heat (entropy) from CPU to Heatsink.";
+                statusText.className = "text-sm font-medium text-green-700 bg-green-100 p-4 rounded-lg border border-green-200";
+            }
+        }
+    </script>
+</body>
+</html>
